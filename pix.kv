@@ -1,0 +1,57 @@
+#:kivy 1.0.9
+
+
+
+<Apibar>:
+    api_input_bar: api_input
+    toggle_visibility_button : toggle_visibility
+    BoxLayout:
+        orientation:"vertical"
+        padding: "5dp"
+        
+        BoxLayout:
+            orientation: "horizontal"
+            size_hint_y: 0.5
+            
+                     
+            Label:
+                text: "Api-key: "
+                font_size: "30dp"
+                size_hint_x: 0.7
+                
+            TextInput:
+                id: api_input
+                focus: True
+                size_hint_x: 2
+                font_size: "15dp"
+                hint_text_color: [1, 0, 0, 0.2]
+                multiline: False
+                password: True
+                on_size: root.align_string()
+                on_text_validate: root.store_api_key(self.text)
+            
+            Button:
+                size_hint_x: 0.27
+                text: "Clear"
+                on_press: root.clear()
+
+            ToggleButton:
+                id: toggle_visibility
+                size_hint_x: 0.27
+                text: "Hide"
+                on_press: root.toggle_visibility()
+            
+            
+            BoxLayout:
+                orientation: "vertical"
+                Button:
+                    text:"Save key"
+                    on_press:root.save_key()
+                Button:
+                    text:"Use temp"
+                    on_press:root.print_text()
+
+        BoxLayout:
+            size_hint_y: 5
+            ToggleButton:
+                text: "something"
