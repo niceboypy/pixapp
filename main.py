@@ -2,20 +2,24 @@
 
 from kivy.app import App
 from kivy.uix.boxlayout import BoxLayout
+from kivy.uix.textinput import TextInput
 from kivy.uix.widget import Widget
+from kivy.base import EventLoop
+from kivy.config import Config
 from kivy.properties import ObjectProperty
 
-# import re as regex
+Config.set('input', 'mouse', 'mouse,disable_multitouch')
+
+class Flexible_Input(TextInput):
+
+    def on_touch_down(self, touch):
+        super(Flexible_Input,self).on_touch_down(touch)
+        if touch.button == 'right':
+            pos = self.to_local(*self._long_touch_pos, relative=False)
+            self._show_cut_copy_paste(
+                pos, EventLoop.window, mode='copy')
 
 
-# def check_match(string, exp):
-#     print("The expression is: ", exp)
-#     pattern = regex.compile(exp)
-
-#     if pattern.match(string):
-#         return True
-#     else:
-#         return False
 
 
 class Apibar(BoxLayout):

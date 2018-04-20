@@ -8,7 +8,7 @@
     BoxLayout:
         orientation:"vertical"
         padding: "5dp"
-        
+         
         BoxLayout:
             orientation: "horizontal"
             size_hint_y: 0.5
@@ -19,7 +19,8 @@
                 font_size: "30dp"
                 size_hint_x: 0.7
                 
-            TextInput:
+            Flexible_Input:
+                use_bubble: True
                 id: api_input
                 focus: True
                 size_hint_x: 2
@@ -55,3 +56,4 @@
             size_hint_y: 5
             ToggleButton:
                 text: "something"
+
