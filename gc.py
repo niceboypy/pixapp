@@ -21,8 +21,7 @@ import sys
 #   and | signifies index addition for commit
 #   ....$ ./gc.py <branchname> "|<filenames_separated_by_spaces>~<commit_message>"
 
-sys.argv = ['./gc.py', 'workspace', '|./gc.py~here']
-
+branch_name = sys.argv[1]
 
 if len(sys.argv)<3:
     #signifies only a checkout
@@ -31,11 +30,11 @@ if len(sys.argv)<3:
 
 indexed_files = [
     'main.py',
+    'gc.py',
     'pix.kv'
 ]
 
 
-branch_name = sys.argv[1]
 
 class Parse_Command:
     def __init__(self, msg=None):
@@ -114,6 +113,13 @@ class Parse_Command:
         files_found = []
         if files or indexed_files:
                 files_found = indexed_files + files
+                for file in files_found:
+                    if os.path.exists(file)==False:
+                        print("One or more files don't exist")
+                        print("Please check your index list")
+                        sys.exit(0)
+
+
                 return files_found
         else:
             print("No files to add")
@@ -132,7 +138,7 @@ class Parse_Command:
             execution = self.And(checkout, commit)
         
         elif self.addindex_only:
-            execution = add_index = add_index.format(self.index_files)
+            execution = add_index = add_index.format(files_to_add)
 
         elif self.both_optn:
             execution = self.And(checkout.format(branch_name),
