@@ -7,8 +7,10 @@ from kivy.uix.widget import Widget
 from kivy.base import EventLoop
 from kivy.config import Config
 from kivy.properties import ObjectProperty
+from kivy.lang.builder import Builder
 
 Config.set('input', 'mouse', 'mouse,disable_multitouch')
+
 
 class Flexible_Input(TextInput):
 

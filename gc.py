@@ -1,10 +1,27 @@
 #!/usr/bin/env python
 
+
 import os
 import sys
 
-sys.argv=['./gc.py', 'secondbranch', "|gc.py README.md~Test commit"]
+#  GC stands for Git Control 
+#  script to automate many files adding to git
+#  excluding files from adding to index
+#  tracking specifically WITHOUT having to know
+#  much of git commands
 
+#  put the files to track on indexed_files list below
+
+#   branch_name is always gonna be arg no. 1
+#   msg format to be used:
+#
+#   in the terminal:
+#   note the symbols | and ~ are necessary for the working of this script
+#   '~' signifies commit
+#   and | signifies index addition for commit
+#   ....$ ./gc.py <branchname> "|<filenames_separated_by_spaces>~<commit_message>"
+
+sys.argv = ['./gc.py', 'workspace', '|./gc.py~here']
 
 
 if len(sys.argv)<3:
@@ -17,13 +34,6 @@ indexed_files = [
     'pix.kv'
 ]
 
-#branch_name is always gonna be arg no. 1
-#msg format to be used:
-###
-###in the terminal:
-###note the symbols | and ~ are necessary for the working of this script
-### '~' signifies commit and | signifies index addition for commit
-###    ....$ ./gc.py <branchname> "|<filenames_separated_by_spaces>~<commit_message>"
 
 branch_name = sys.argv[1]
 
@@ -115,12 +125,12 @@ class Parse_Command:
         commit='git commit -m "{}"'
         both_operation = self.And(add_index, commit)
         execution = ''
-
         files_to_add = (' '.join(self.index_files)).strip()
+
         if self.commit_only:
             commit = commit.format(self.commit_msg)
             execution = self.And(checkout, commit)
-
+        
         elif self.addindex_only:
             execution = add_index = add_index.format(self.index_files)
 

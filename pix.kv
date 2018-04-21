@@ -1,7 +1,6 @@
 #:kivy 1.0.9
 
 
-
 <Apibar>:
     api_input_bar: api_input
     toggle_visibility_button : toggle_visibility
@@ -41,6 +40,7 @@
                 size_hint_x: 0.27
                 text: "Hide"
                 on_press: root.toggle_visibility()
+                on_press: Clock.schedule_once(lambda *_: setattr(Flexible_Input, 'focus', True), 0.1)
             
             
             BoxLayout:
