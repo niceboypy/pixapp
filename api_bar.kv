@@ -1,0 +1,107 @@
+#:kivy 1.10.0
+
+<Apibar>:
+    api_input_bar: api_input
+    toggle_visibility_button : toggle_visibility
+    
+    BoxLayout:
+        orientation:"vertical"
+        padding: "5dp"
+         
+        BoxLayout:
+            orientation: "horizontal"
+            size_hint_y: 0.5
+                    
+            Label:
+                text: "Api-key: "
+                font_size: "30dp"
+                size_hint_x: 0.7
+                
+            Flexible_Input:
+                id: api_input
+                padding_x: "50dp"
+                hint_text: "Your API key"
+                hint_text_color: [1, 0, 0, 0.2]
+                password: True
+                allow_copy: False
+                on_text_validate: root.store_api_key(self.text)
+            
+            Button:
+                size_hint_x: 0.27
+                text: "Clear"
+                on_press: root.clear()
+                on_release: api_input.focus=True
+
+            ToggleButton:
+                id: toggle_visibility
+                size_hint_x: 0.27
+                text: "Hide"
+                on_press: root.toggle_visibility()
+                on_release: api_input.focus = True
+            
+            BoxLayout:
+                orientation: "vertical"
+                Button:
+                    text:"Save key"
+                    on_press:root.save_key()
+                    on_release: api_input.focus=True
+                Button:
+                    text:"Use temp"
+                    on_press:print("something")#root.print_text()
+                    on_release: api_input.focus=True
+
+
+
+
+<Search_type_panel>:
+    image_optn: image
+    video_optn: video
+    both_optn: both
+    editor_optn: editor_choice
+
+    BoxLayout:
+        padding: "10dp"
+        orientation: 'vertical'
+        BoxLayout:
+            orientation: 'horizontal'
+            CheckBox:
+                id: image
+                active: True
+                group: 'search_type'
+            Label:
+                text: "[ref=image]image[/ref]"
+                size_hint_x: "10"
+                markup: True
+                on_ref_press: root.setstatus(image)
+
+            CheckBox:
+                id: video
+                active: False
+                group: 'search_type'
+            Label:
+                text: "[ref=video]video[/ref]"
+                size_hint_x: "10"
+                markup: True
+                on_ref_press: root.setstatus(video)
+            CheckBox:
+                id: both
+                active: False
+                group: 'search_type'
+            Label:
+                text: "[ref=video]both[/ref]"
+                markup: True
+                size_hint_x: "10"
+                on_ref_press: root.setstatus(both)
+
+            Label:
+                #maintains size
+                size_hint_x: "80"
+            
+            CheckBox:
+                id: editor_choice
+                active: False
+            Label: 
+                text:"[ref='video']Editor's choice[/ref]"
+                markup:True
+                size_hint_x: "20"
+                on_ref_press: root.setstatus(editor_choice)

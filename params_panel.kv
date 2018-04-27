@@ -1,0 +1,49 @@
+#:kivy 1.10.0
+#:import Factory kivy.factory.Factory
+
+#:set color_button (0.784, 0.443, 0.216, 1)  # brown
+#:set color_button_pressed (0.659, 0.522, 0.431, 1)  # darker brown
+#:set color_font   (0.957, 0.890, 0.843, 1)  # off white
+ 
+<MySpinnerOption@SpinnerOption>:
+    # background_color: color_button if self.state == 'down' else color_button_pressed
+    background_normal: 'button.png'
+    background_down: 'button_dep.png'
+    color: color_font
+
+<MyDropDownClass@DropDown>:
+    bar_color: [.7, .10, .1, .95]
+    bar_inactive_color: [.5, .5, .5, .8]
+    bar_width: '7dp'
+    
+ 
+<param_holder>:
+    orientation:'vertical'
+    spinner: spin
+    BoxLayout:
+        orientation:'horizontal'
+        size_hint_y: 1
+        Label:
+            text: 'something: '
+            valign: 'middle'
+            size_hint_x: 0.3
+        Spinner:
+            id: spin
+            
+            text: "First thing"
+            values: ["First thing", "Second thing", "Third thing","fourth_thing", 'fifth thing','sixth', 'seventh']
+            background_normal: 'dropdown.png'
+            background_down: 'dropdown_dep.png'
+            color: color_font
+            dropdown_cls: Factory.get("MyDropDownClass")
+            option_cls: Factory.get("MySpinnerOption")
+            size_hint_x: 0.7
+    BoxLayout:
+        orientation:'vertical'
+        size_hint_y: 0.4
+        Label:
+            text:''
+    
+
+
+

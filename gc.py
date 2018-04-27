@@ -21,6 +21,9 @@ import sys
 #   and | signifies index addition for commit
 #   ....$ ./gc.py <branchname> "|<filenames_separated_by_spaces>~<commit_message>"
 
+if len(sys.argv) < 2:
+    print("You must at least enter the branch name")
+    sys.exit(1)
 branch_name = sys.argv[1]
 
 if len(sys.argv)<3:
@@ -31,7 +34,17 @@ if len(sys.argv)<3:
 indexed_files = [
     'main.py',
     'gc.py',
-    'pix.kv'
+    'pix.kv',
+    'api_bar.kv',
+    'api_panel_ui.py',
+    'button.png',
+    'button_dep.png',
+    'drawing.svg',
+    'dropdown.png',
+    'dropdown_dep.png',
+    'param_panel_ui.py',
+    'params_panel.kv',
+
 ]
 
 
@@ -117,6 +130,8 @@ class Parse_Command:
                     if os.path.exists(file)==False:
                         print("One or more files don't exist")
                         print("Please check your index list")
+                        print("Missing: ")
+                        print(file)
                         sys.exit(0)
 
 
