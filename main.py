@@ -6,6 +6,7 @@ from kivy.uix.widget import Widget
 from kivy.base import EventLoop
 from kivy.config import Config
 from kivy.properties import ObjectProperty, ListProperty
+from kivy.uix.label import Label
 
 from param_panel_ui import param_holder
 from api_panel_ui import Integrated_api_bar
@@ -47,14 +48,30 @@ class Apiholder(BoxLayout):
 class Paramholder(BoxLayout):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-        self.orientation='vertical'
+        self.orientation='horizontal'
         change = [('spinner', 
                     {'values':('uno', 'dos', 'tres', 'quadro', 'sinco')
                     }
                   )
                 ]
+        self.left_layout = BoxLayout(size_hint_x=0.5, orientation='vertical')
+        self.right_layout = BoxLayout(size_hint_x=0.5, orientation='vertical')
 
-        self.add_widget(param_holder(change))
+        self.left_layout.add_widget(param_holder(change))
+        self.left_layout.add_widget(param_holder(change))
+        self.left_layout.add_widget(param_holder(change))
+        self.left_layout.add_widget(param_holder(change))
+        self.left_layout.add_widget(param_holder(change))
+        self.left_layout.add_widget(param_holder(change))
+
+        self.right_layout.add_widget(Label(text='somethinghere', size_hint_x=0.5))
+
+        self.add_widget(self.left_layout)
+        self.add_widget(self.right_layout)
+
+
+
+
         
         
 

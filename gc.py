@@ -44,9 +44,7 @@ indexed_files = [
     'dropdown_dep.png',
     'param_panel_ui.py',
     'params_panel.kv',
-
 ]
-
 
 
 class Parse_Command:
