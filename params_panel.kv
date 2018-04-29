@@ -15,9 +15,59 @@
     bar_color: [.7, .10, .1, .95]
     bar_inactive_color: [.5, .5, .5, .8]
     bar_width: '7dp'
+
+<Img_preview_holder>:
+    orientation:'vertical'
+    BoxLayout:
+        orientation: 'horizontal'
+        size_hint_y: 0.1
+        Label:
+            size_hint_x: 0.7
+        CheckBox:
+            id: preview
+            active:False
+            size_hint_x: 0.01
+            # size_hint_x: None
+        Label:
+            text: "[ref=preview]preview[/ref]"
+            size_hint_x: 0.5
+            markup: True
+            halign: 'left'
+            size_hint_x: None
+            on_ref_press: root.change_status(preview)
+        Label:
+            size_hint_x: 0.7
+    Image:
+        size_hint_y: 0.7
+        source: 'test_image.jpg'
+    Label:
+        size_hint_y: 0.2
     
- 
-<param_holder>:
+
+<Img_query_holder>:
+    orientation: 'vertical'
+    Label:
+        id: place_label1
+        size_hint_y: 0.1
+    BoxLayout:
+        orientation: 'horizontal'
+        Label:
+            id: label
+            text: "Minimum height: "
+            size_hint_x: .35
+
+        Flexible_Input:
+            id: dim_input
+            multiline: False
+            password: False
+            hint_text: 'leave for default'
+            size_hint_y: 0.8
+            size_hint_x: .5
+    Label:
+        id: place_label2
+        size_hint_y: 0.1
+
+<dropdown_holder>:
     orientation:'vertical'
     spinner: spin
     BoxLayout:
@@ -26,7 +76,8 @@
         Label:
             text: 'something: '
             valign: 'middle'
-            size_hint_x: 0.3
+            size_hint_x: 0.5
+            font_size: "17dp"
         Spinner:
             id: spin
             
@@ -44,6 +95,3 @@
         Label:
             text:''
     
-
-
-

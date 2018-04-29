@@ -5,9 +5,46 @@ from kivy.uix.scrollview import ScrollView
 from kivy.app import App
 from kivy.properties import ObjectProperty
 
+class Change_mixin:
+    def apply_changes(self, changes):
+            #format of changes:
+            #[('name', {'attribute', 'value'})]
+            if changes: 
+                for change in changes:
+                    for props in change[1].keys():
+                        setattr(self.items[change[0]],
+                                props,
+                                change[1][props])
 
 
-class param_holder(BoxLayout):
+class Img_preview_holder(BoxLayout):
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+    
+    def change_status(self, obj):
+        obj.active=False if obj.active is True else True
+            
+
+
+
+
+class Img_query_holder(BoxLayout, Change_mixin):
+    #short for
+    #image dimension info holder
+    def __init__(self, changes=None, **kwargs):
+        super().__init__(**kwargs)
+        self.items = {
+            'Input': self.ids.dim_input,
+            'Label': self.ids.label,
+            'place1':self.ids.place_label1,
+            'place2':self.ids.place_label2,
+        }
+
+        self.apply_changes(changes)
+
+
+
+class dropdown_holder(BoxLayout, Change_mixin):
     spinner = ObjectProperty()
     def __init__(self, changes=None, **kwargs):
         super().__init__(**kwargs)
@@ -17,18 +54,8 @@ class param_holder(BoxLayout):
         }
         self.ids.spin.dropdown_cls.max_height=200
 
-        if changes:
-            self.apply_changes(changes)
+        self.apply_changes(changes)
     
-    def apply_changes(self, changes):
-        #format of changes:
-        #[('name', {'attribute', 'value'})]
-        for change in changes:
-            for props in change[1].keys():
-                setattr(self.items[change[0]],
-                        props,
-                        change[1][props])
-
 
 
 
