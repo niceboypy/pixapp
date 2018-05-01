@@ -20,6 +20,18 @@
   <defs
      id="defs4">
     <linearGradient
+       inkscape:collect="always"
+       id="linearGradient4165">
+      <stop
+         style="stop-color:#878787;stop-opacity:1"
+         offset="0"
+         id="stop4167" />
+      <stop
+         style="stop-color:#ffffff;stop-opacity:1"
+         offset="1"
+         id="stop4169" />
+    </linearGradient>
+    <linearGradient
        id="linearGradient4208"
        inkscape:collect="always">
       <stop
@@ -107,6 +119,16 @@
        y1="571.74219"
        x2="403.04398"
        y2="77.432121" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient4165"
+       id="linearGradient4163"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="translate(0,548.53894)"
+       x1="403.04398"
+       y1="547.67487"
+       x2="403.04398"
+       y2="359.03055" />
   </defs>
   <sodipodi:namedview
      id="base"
@@ -115,9 +137,9 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="1.1535952"
-     inkscape:cx="437.27065"
-     inkscape:cy="766.23284"
+     inkscape:zoom="0.99893222"
+     inkscape:cx="458.35665"
+     inkscape:cy="-7.4250904"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="false"
@@ -229,5 +251,16 @@
          d="m 605.83787,355.59994 15.54872,57.335 15.54872,-57.335"
          style="fill:none;fill-rule:evenodd;stroke:#ffffff;stroke-width:7.10098886;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
     </g>
+    <rect
+       rx="1.9593589"
+       inkscape:export-ydpi="90"
+       inkscape:export-xdpi="90"
+       ry="1.9593589"
+       y="933.63293"
+       x="120.15493"
+       height="127.15425"
+       width="530.78149"
+       id="rect4161"
+       style="opacity:1;fill:url(#linearGradient4163);fill-opacity:1;stroke:#333333;stroke-width:1.41;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
   </g>
 </svg>

@@ -29,6 +29,7 @@
             Button:
                 size_hint_x: 0.27
                 text: "Clear"
+                background_normal: "button.png"
                 on_press: root.clear()
                 on_release: api_input.focus=True
 
@@ -36,19 +37,18 @@
                 id: toggle_visibility
                 size_hint_x: 0.27
                 text: "Hide"
+                background_normal: "button.png"
+                background_down: "button_dep.png"
                 on_press: root.toggle_visibility()
                 on_release: api_input.focus = True
             
-            BoxLayout:
-                orientation: "vertical"
-                Button:
-                    text:"Save key"
-                    on_press:root.save_key()
-                    on_release: api_input.focus=True
-                Button:
-                    text:"Use temp"
-                    on_press:print("something")#root.print_text()
-                    on_release: api_input.focus=True
+            Button:
+                text:"Save key"
+                size_hint_x: 0.4
+                on_press:root.save_key()
+                background_normal: "button.png"
+                on_release: api_input.focus=True
+                
 
 
 
@@ -100,7 +100,7 @@
             CheckBox:
                 id: editor_choice
                 active: False
-            Label: 
+            Label:
                 text:"[ref='video']Editor's choice[/ref]"
                 markup:True
                 size_hint_x: "20"

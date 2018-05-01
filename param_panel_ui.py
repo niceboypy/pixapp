@@ -9,24 +9,21 @@ class Change_mixin:
     def apply_changes(self, changes):
             #format of changes:
             #[('name', {'attribute', 'value'})]
-            if changes: 
-                for change in changes:
-                    for props in change[1].keys():
-                        setattr(self.items[change[0]],
-                                props,
-                                change[1][props])
+        if changes: 
+            for change in changes:
+                for props in change[1].keys():
+                    setattr(self.items[change[0]],
+                            props,
+                            change[1][props])
 
 
-class Img_preview_holder(BoxLayout):
+class Img_search_preview(BoxLayout):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
     
     def change_status(self, obj):
         obj.active=False if obj.active is True else True
             
-
-
-
 
 class Img_query_holder(BoxLayout, Change_mixin):
     #short for
@@ -41,6 +38,9 @@ class Img_query_holder(BoxLayout, Change_mixin):
         }
 
         self.apply_changes(changes)
+    
+    def print_text(self):
+        print("I am here, ", self.ids.dim_input.text)
 
 
 
@@ -50,15 +50,73 @@ class dropdown_holder(BoxLayout, Change_mixin):
         super().__init__(**kwargs)
         self.items={
             'spinner':self.ids.spin,
+            'label':self.ids.info_label
             # 'label':self.ids.lab
         }
-        self.ids.spin.dropdown_cls.max_height=200
+        self.ids.spin.dropdown_cls.max_height=150
 
         self.apply_changes(changes)
     
+class Info_and_preview(BoxLayout):
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
 
+        change= [('spinner', 
+                            {'values':('uno', 'dos', 'tres', 'quadro', 'sinco')
+                            }),
+                    ('label',{'text':'narrow_heigh'})
+                    ]
 
+        self.left_layout = BoxLayout(size_hint_x=0.5, orientation='vertical')
+        self.right_layout = BoxLayout(size_hint_x=0.5, orientation='vertical')
+        self.left_layout.add_widget(dropdown_holder(change))
+        self.left_layout.add_widget(dropdown_holder(change))
+        self.left_layout.add_widget(dropdown_holder(change))
+        self.left_layout.add_widget(dropdown_holder(change))
+        self.left_layout.add_widget(dropdown_holder(change))
+        
 
+        minimum_height=[(
+            'Input', 
+            {'hint_text':'leave for default'}),
+            ('Label',
+            {'text':'Minimum width: '})
+            ]
+
+        quantity_panel=[(
+            'Input', 
+            {'hint_text':'max: 5000 imgs/hr'}),
+            ('Label',
+            {'text':'Quantity (def. 100): '})
+            ]
+
+        common_size_hint= 0.15
+        image_search=[(
+            'Input',
+            {'hint_text':'Fetch Imgs e.g cars'}),
+            ('Label',
+            {'text': 'Fetch: ',
+            'size_hint_x':common_size_hint,
+            }),
+        ]
+
+        multisearch=[(
+            'Input',
+            {'hint_text':'separate using ","'}),
+            ('Label',
+            {'text': 'Multisearch: ', 
+            'size_hint_x':common_size_hint})
+        ]
+
+        self.left_layout.add_widget(Img_query_holder())
+        self.left_layout.add_widget(Img_query_holder(minimum_height))
+        self.left_layout.add_widget(Img_query_holder(quantity_panel))
+        self.right_layout.add_widget(Img_search_preview())
+
+        self.add_widget(self.left_layout)
+        self.add_widget(Label(size_hint_x=0.07))
+        self.add_widget(self.right_layout)
+        # self.add_widget(Label(size_hint_x=0.01))
 
 
 

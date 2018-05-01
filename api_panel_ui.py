@@ -66,6 +66,7 @@ class Search_type_panel(BoxLayout):
         self.search_choices = [self.ids.image, 
                                 self.ids.video,
                                 self.ids.both]
+        self.padding_left='20dp'
 
     def setstatus(self, obj=None):
         if obj is self.ids.editor_choice:

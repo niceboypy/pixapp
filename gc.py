@@ -44,6 +44,8 @@ indexed_files = [
     'dropdown_dep.png',
     'param_panel_ui.py',
     'params_panel.kv',
+    'img_video_inf.txt',
+    'button_list.png'
 ]
 
 

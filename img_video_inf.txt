@@ -1,0 +1,28 @@
+api_key: both
+
+FOR IMAGE                   FOR VIDEO
+
+FOR DROPDOWNS:
+
+lang: 'language code'   |   SAME
+image_type              |   video_type
+orientation             |   NOT AVAILABLE
+category                |   SAME
+colors                  |
+order                   |   SAME
+
+FOR INPUT BARS
+
+q: 'search term'        |   SAME
+min_width               |   SAME
+min_height              |   SAME
+
+
+FOR CHECKBOX
+
+editor's choice         |   SAME
+
+
+PARAMS NOT FOR UI - TO BE INTEGRATED AS QUANTITY
+page:                   | search results are paginated. Use parameter to select page
+per_page:               | Determine number of pages per page

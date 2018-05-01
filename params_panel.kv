@@ -3,11 +3,11 @@
 
 #:set color_button (0.784, 0.443, 0.216, 1)  # brown
 #:set color_button_pressed (0.659, 0.522, 0.431, 1)  # darker brown
-#:set color_font   (0.957, 0.890, 0.843, 1)  # off white
+#:set color_font   (0, 0, 0, 1)  # off white
  
 <MySpinnerOption@SpinnerOption>:
     # background_color: color_button if self.state == 'down' else color_button_pressed
-    background_normal: 'button.png'
+    background_normal: 'button_list.png'
     background_down: 'button_dep.png'
     color: color_font
 
@@ -16,33 +16,63 @@
     bar_inactive_color: [.5, .5, .5, .8]
     bar_width: '7dp'
 
-<Img_preview_holder>:
-    orientation:'vertical'
+
+<Img_search_preview>:
+    orientation: 'vertical'
+    size_hint_y: 0.2
     BoxLayout:
-        orientation: 'horizontal'
-        size_hint_y: 0.1
-        Label:
-            size_hint_x: 0.7
-        CheckBox:
-            id: preview
-            active:False
-            size_hint_x: 0.01
-            # size_hint_x: None
-        Label:
-            text: "[ref=preview]preview[/ref]"
-            size_hint_x: 0.5
-            markup: True
-            halign: 'left'
-            size_hint_x: None
-            on_ref_press: root.change_status(preview)
-        Label:
-            size_hint_x: 0.7
-    Image:
-        size_hint_y: 0.7
-        source: 'test_image.jpg'
-    Label:
+        orientation:'horizontal'
         size_hint_y: 0.2
+        Label:
+            text: 'Fetch: '
+            size_hint_x: 0.3
+        TextInput:
+            multiline:False
+            hint_text: "Image to fetch e.g. car"
+        
+    BoxLayout:
+        orientation:'horizontal'
+        size_hint_y: 0.2
+        padding_bottom: "10dp"
+        Label:
+            text: 'Multisearch: '
+            size_hint_x: 0.3
+        TextInput:
+            multiline:True
+            hint_text: "use ',' to separate"
+    Label: 
+        size_hint_y:0.1
+    BoxLayout:
+        orientation:'vertical'
+        BoxLayout:
+            orientation: 'horizontal' 
+            size_hint_y: 0.1
+            padding_top: "10dp"
+            Label:
+                size_hint_x: .5
+            CheckBox:
+                id: preview
+                active:False
+                size_hint_x: 0.01
+            Label:
+                size_hint_x: 1
+                text: "[ref=preview]Preview: [/ref]"
+                markup: True
+                font_size: "20dp"
+                halign: 'left'
+                size_hint_x: 0.4
+                on_ref_press: root.change_status(preview)
+            Label:
+                size_hint_x: .5
+        Image:
+            source: 'largeimage.png'
     
+    Button:
+        text: 'Fetch!'
+        background_normal:'button.png'
+        background_down:'button_dep.png'
+        size_hint_y: 0.3
+   
 
 <Img_query_holder>:
     orientation: 'vertical'
@@ -55,7 +85,6 @@
             id: label
             text: "Minimum height: "
             size_hint_x: .35
-
         Flexible_Input:
             id: dim_input
             multiline: False
@@ -63,6 +92,8 @@
             hint_text: 'leave for default'
             size_hint_y: 0.8
             size_hint_x: .5
+            padding_x: "5dp"
+            on_text:root.print_text()
     Label:
         id: place_label2
         size_hint_y: 0.1
@@ -74,18 +105,18 @@
         orientation:'horizontal'
         size_hint_y: 1
         Label:
+            id: info_label
             text: 'something: '
             valign: 'middle'
             size_hint_x: 0.5
             font_size: "17dp"
         Spinner:
             id: spin
-            
             text_autoupdate: True
             values: ["First thing", "Second thing", "Third thing","fourth_thing", 'fifth thing','sixth', 'seventh']
             background_normal: 'dropdown.png'
             background_down: 'dropdown_dep.png'
-            color: color_font
+            color: (1,1,1,1)
             dropdown_cls: Factory.get("MyDropDownClass")
             option_cls: Factory.get("MySpinnerOption")
             size_hint_x: 0.7
