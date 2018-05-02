@@ -7,6 +7,7 @@ from kivy.base import EventLoop
 from kivy.config import Config
 from kivy.properties import ObjectProperty, ListProperty
 from kivy.uix.label import Label
+from kivy.uix.button import Button
 from kivy.uix.progressbar import ProgressBar
 
 from param_panel_ui import Info_and_preview#dropdown_holder, Img_query_holder, Img_search_preview
@@ -22,6 +23,11 @@ from kivy.clock import Clock
 # from kivy.storage.jsonstore import JsonStore
 
 # on_press: Clock.schedule_once(lambda *_: setattr(api_input, 'focus', True), 0.1)
+
+class Common_button(Button):
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+
 
 class Flexible_Input(TextInput):
     def __init__(self, **kwargs):

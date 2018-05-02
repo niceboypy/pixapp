@@ -2,6 +2,8 @@ api_key: both
 
 FOR IMAGE                   FOR VIDEO
 
+
+
 FOR DROPDOWNS:
 
 lang: 'language code'   |   SAME
@@ -26,3 +28,6 @@ editor's choice         |   SAME
 PARAMS NOT FOR UI - TO BE INTEGRATED AS QUANTITY
 page:                   | search results are paginated. Use parameter to select page
 per_page:               | Determine number of pages per page
+
+
+lang = (en, cs, da, de, es, fr, id, it, hu, nl, no, pl, pt, ro, sk, fi, sv, tr, vi, th, bg, ru, el, ja, ko, zh)

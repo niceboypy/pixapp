@@ -3,18 +3,39 @@ from kivy.uix.label import Label
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.scrollview import ScrollView
 from kivy.app import App
+import webbrowser, os, sys
 from kivy.properties import ObjectProperty
+from par_values import Values
 
 class Change_mixin:
     def apply_changes(self, changes):
-            #format of changes:
-            #[('name', {'attribute', 'value'})]
+        # print(changes)
+        # import time
+        # time.sleep(3)
         if changes: 
             for change in changes:
+                print(r"%%%%%%%%%%%%%%%%%%%%%%%")
+                print("Item taken: ", change)
+                print("Item properties", change[1].keys())
+                print(r"%%%%%%%%%%%%%%%%%%%%%%%")
+                # import time
+                # time.sleep(2)
+                Cur_obj = self.items[change[0]]
+                
                 for props in change[1].keys():
-                    setattr(self.items[change[0]],
-                            props,
-                            change[1][props])
+                    Cur_obj_properties = change[1][props]
+                    print("Item properties", props)
+                    if props=='bind':
+                        import time
+                        print("The current object is: ", Cur_obj)
+                        time.sleep(4)
+                        Cur_obj.bind(on_text=lambda *_: print('something'),
+                                on_text_validate=lambda *_: print("something that I have here"))#**(change[1][props]))
+                    else: 
+                        setattr(Cur_obj,
+                                props,
+                                Cur_obj_properties)
+
 
 
 class Img_search_preview(BoxLayout):
@@ -26,16 +47,15 @@ class Img_search_preview(BoxLayout):
             
 
 class Img_query_holder(BoxLayout, Change_mixin):
-    #short for
-    #image dimension info holder
     def __init__(self, changes=None, **kwargs):
         super().__init__(**kwargs)
         self.items = {
             'Input': self.ids.dim_input,
             'Label': self.ids.label,
-            'place1':self.ids.place_label1,
-            'place2':self.ids.place_label2,
         }
+        print("The current object passed is: ", self.ids.dim_input)
+        import time
+        time.sleep(4)
 
         self.apply_changes(changes)
     
@@ -54,35 +74,89 @@ class dropdown_holder(BoxLayout, Change_mixin):
             # 'label':self.ids.lab
         }
         self.ids.spin.dropdown_cls.max_height=150
-
         self.apply_changes(changes)
     
+
 class Info_and_preview(BoxLayout):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
 
-        change= [('spinner', 
-                            {'values':('uno', 'dos', 'tres', 'quadro', 'sinco')
+        language= [('spinner', 
+                            {'values':Values.language
                             }),
-                    ('label',{'text':'narrow_heigh'})
+                    ('label',{'text':'language: '})
                     ]
+
+        img_type= [('spinner', 
+                            {'values':Values.image_type
+                            }),
+                    ('label',{'text':'Image type: '})
+                    ]
+
+        orien= [('spinner', 
+                            {'values':Values.orientation
+                            }),
+                    ('label',{'text':'Orientation: '})
+                    ]
+
+        category= [('spinner', 
+                            {'values':Values.category
+                            }),
+                    ('label',{'text':'Category: '})
+                    ]
+
+        colors= [('spinner', 
+                            {'values':Values.colors
+                            }),
+                    ('label',{'text':'Colors: '})
+                    ]
+
+        order= [('spinner', 
+                            {'values':Values.order
+                            }),
+                    ('label',{'text':'Order: '})
+                    ]
+
+        order= [('spinner', 
+                            {'values':Values.order
+                            }),
+                    ('label',{'text':'Order: '})
+                    ]
+        
 
         self.left_layout = BoxLayout(size_hint_x=0.5, orientation='vertical')
         self.right_layout = BoxLayout(size_hint_x=0.5, orientation='vertical')
-        self.left_layout.add_widget(dropdown_holder(change))
-        self.left_layout.add_widget(dropdown_holder(change))
-        self.left_layout.add_widget(dropdown_holder(change))
-        self.left_layout.add_widget(dropdown_holder(change))
-        self.left_layout.add_widget(dropdown_holder(change))
-        
+
+        self.left_layout_drop = BoxLayout(orientation='vertical', size_hint_y=0.7)
+        self.left_layout_quer = BoxLayout(orientation='vertical', size_hint_y=0.3)
+
+        self.left_layout_drop.add_widget(dropdown_holder(language))
+        self.left_layout_drop.add_widget(dropdown_holder(img_type))
+        self.left_layout_drop.add_widget(dropdown_holder(orien))
+        self.left_layout_drop.add_widget(dropdown_holder(category))
+        self.left_layout_drop.add_widget(dropdown_holder(colors))
+        self.left_layout_drop.add_widget(dropdown_holder(order))
+
 
         minimum_height=[(
             'Input', 
-            {'hint_text':'leave for default'}),
+            {'hint_text':'leave for default',
+            'bind': {'on_text': self.checkinput()}
+                }),
+            ('Label',
+            {'text':'Minimum height: '})
+            ]
+        
+        minimum_width=[(
+            'Input', 
+            {'hint_text':'leave for default',
+            'on_text': lambda *_: self.checkinput('width')}),
             ('Label',
             {'text':'Minimum width: '})
             ]
-
+        
+        # x= (minimum_height)
+        
         quantity_panel=[(
             'Input', 
             {'hint_text':'max: 5000 imgs/hr'}),
@@ -108,86 +182,26 @@ class Info_and_preview(BoxLayout):
             'size_hint_x':common_size_hint})
         ]
 
-        self.left_layout.add_widget(Img_query_holder())
-        self.left_layout.add_widget(Img_query_holder(minimum_height))
-        self.left_layout.add_widget(Img_query_holder(quantity_panel))
+        self.left_layout_quer.add_widget(Img_query_holder(minimum_height))#[ref=preview]Preview: [/ref]
+        self.left_layout_quer.add_widget(Img_query_holder(minimum_width))
+        self.left_layout_quer.add_widget(Img_query_holder(quantity_panel))
+
+        self.left_layout.add_widget(self.left_layout_drop)
+        self.left_layout.add_widget(self.left_layout_quer)
+        self.left_layout.add_widget(Label(text='Image Source: [ref=link]Pixabay.com[/ref]',
+                                    color=(0.1,0.1,0.1,1),
+                                    font_size='20dp',
+                                    size_hint_y="0.08",
+                                    markup=True,on_ref_press=lambda *_:self.open_new_browser())) #not gonna change for eternity
         self.right_layout.add_widget(Img_search_preview())
 
         self.add_widget(self.left_layout)
         self.add_widget(Label(size_hint_x=0.07))
         self.add_widget(self.right_layout)
         # self.add_widget(Label(size_hint_x=0.01))
-
-
-
-
-
-
-# class Params:
-#     #params is parameters ;-)
-#     global_default_params = {
-#         'parent':{
-#             'orientation': 'vertical',
-#         },
-#         'widgets':{
-#                 'label1':{
-#                     'text': 'default',
-#                     'size_hint': (.3, None)
-                    
-#                 },
-#                 'spinner1':{
-#                     'text_autoupdate': True,
-#                     'values': ('test1', 'test2', 'test3',
-#                             'test4', 'test5', 'test6', 
-#                             'test7', 'test8', 'test9', 
-#                             'test10'),
-#                     'size_hint':(.7, None),
-#                 },
-#             },
-#             #format: (any parent,parent_property, child, property_to_link)
-#         'objects': [(Label, 'label1'), (Spinner, 'spinner1')]
-#     }
-
-#     def __init__(self, kwargs=global_default_params):
-#         self.key = {}
-#         self.update(kwargs)
-        
-#     def update(self, kwargs):
-#         self.__dict__.update(kwargs)
-
-
-# class label_dropdown(BoxLayout):
-#     def __init__(self, attribute=Params(), **updates):
-#         super().__init__()
-#         [setattr(self, x, (attribute.parent)[x]) for x in attribute.parent.keys()]
-#         self.__dict__.update(**(attribute.parent))
-#         attribute.update(updates) #everything is updated here
-#         self.make_single(attribute)
-
-#     def make_single(self, attribute):
-#         for widgt in attribute.objects:
-#             import time
-#             print("here")
-            
-#             self.add_widget(self.construct(widgt[0],**(attribute.widgets[widgt[1]])))
     
-#     def construct(self, obj, **properties):
-#         print("The object is: ", obj)
-#         print("The properties are: ", properties)
-#         return obj(**properties)
-
-
-# class params_panel(BoxLayout):
-#     def __init__(self):
-#         super().__init__()
-#         self.orientation = 'vertical'
-#         self.add_widget(label_dropdown())
-#         self.add_widget(label_dropdown())
+    def open_new_browser(self):
+        webbrowser.open('https://pixabay.com')
     
-
-# class picapp(App):
-#     def build(self):
-#         return params_panel()
-
-# if __name__ == '__main__':
-#     picapp().run()
+    def checkinput(self, check_values=None):
+        print("I am in checkinput")

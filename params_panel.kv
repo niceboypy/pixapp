@@ -40,6 +40,22 @@
         TextInput:
             multiline:True
             hint_text: "use ',' to separate"
+    BoxLayout:
+        orientation:'horizontal'
+        size_hint_y: 0.2
+        padding_bottom: "10dp"
+        Label:
+            text: 'Output: '
+            size_hint_x: 0.3
+        TextInput:
+            multiline:True
+            size_hint_x: 0.8
+            hint_text: "use ',' to separate"
+        Common_button:
+            size_hint_x: 0.2
+            text: 'Save to..'
+            font_size: "12dp"
+
     Label: 
         size_hint_y:0.1
     BoxLayout:
@@ -64,21 +80,16 @@
                 on_ref_press: root.change_status(preview)
             Label:
                 size_hint_x: .5
-        Image:
-            source: 'largeimage.png'
+        VideoPlayer:
+            source: 'soapbubble.mp4'
     
-    Button:
+    Common_button:
         text: 'Fetch!'
-        background_normal:'button.png'
-        background_down:'button_dep.png'
         size_hint_y: 0.3
    
 
 <Img_query_holder>:
     orientation: 'vertical'
-    Label:
-        id: place_label1
-        size_hint_y: 0.1
     BoxLayout:
         orientation: 'horizontal'
         Label:
@@ -90,13 +101,9 @@
             multiline: False
             password: False
             hint_text: 'leave for default'
-            size_hint_y: 0.8
+            size_hint_y: 1
             size_hint_x: .5
-            padding_x: "5dp"
-            on_text:root.print_text()
-    Label:
-        id: place_label2
-        size_hint_y: 0.1
+            padding_x: "10dp"
 
 <dropdown_holder>:
     orientation:'vertical'
