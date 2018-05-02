@@ -45,7 +45,10 @@ indexed_files = [
     'param_panel_ui.py',
     'params_panel.kv',
     'img_video_inf.txt',
-    'button_list.png'
+    'button_list.png',
+    'par_values.py',
+    'soapbubble.mp4',
+    'test_image.jpg'
 ]
 
 

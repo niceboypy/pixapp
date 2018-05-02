@@ -56,7 +56,6 @@ class Img_query_holder(BoxLayout, Change_mixin):
         # print("The current object passed is: ", self.ids.dim_input)
         # import time
         # time.sleep(4)
-        self.ids.dim_input.bind(on_text=lambda *_: print("I have bonded"))
 
         self.apply_changes(changes)
     
