@@ -19,7 +19,7 @@
 
 <Img_search_preview>:
     orientation: 'vertical'
-    size_hint_y: 0.2
+    size_hint_y: 0.07
     BoxLayout:
         orientation:'horizontal'
         size_hint_y: 0.2
@@ -30,32 +30,54 @@
             multiline:False
             hint_text: "Image to fetch e.g. car"
         
-    BoxLayout:
-        orientation:'horizontal'
-        size_hint_y: 0.2
-        padding_bottom: "10dp"
-        Label:
-            text: 'Multisearch: '
-            size_hint_x: 0.3
-        TextInput:
-            multiline:True
-            hint_text: "use ',' to separate"
-    BoxLayout:
-        orientation:'horizontal'
-        size_hint_y: 0.2
-        padding_bottom: "10dp"
-        Label:
-            text: 'Output: '
-            size_hint_x: 0.3
-        TextInput:
-            multiline:True
-            size_hint_x: 0.8
-            hint_text: "use ',' to separate"
-        Common_button:
-            size_hint_x: 0.2
-            text: 'Save to..'
-            font_size: "12dp"
+    # BoxLayout:
+    #     orientation:'horizontal'
+    #     size_hint_y: 0.2
+    #     padding_bottom: "10dp"
+    #     Label:
+    #         text: 'Multisearch: '
+    #         size_hint_x: 0.3
+    #     TextInput:
+    #         multiline:True
+    #         hint_text: "use ',' to separate"
+    # BoxLayout:
+    #     orientation:'horizontal'
+    #     size_hint_y: 0.2
+    #     padding_bottom: "10dp"
+    #     Label:
+    #         text: 'Output: '
+    #         size_hint_x: 0.3
+    #     TextInput:
+    #         multiline:True
+    #         size_hint_x: 0.8
+    #         hint_text: "use ',' to separate"
+    #     Common_button:
+    #         size_hint_x: 0.2
+    #         text: 'Save to..'
+    #         font_size: "12dp"
 
+<Img_query_holder>:
+    orientation: 'vertical'
+    BoxLayout:
+        orientation: 'horizontal'
+        Label:
+            id: label
+            text: "Minimum height: "
+            size_hint_x: .35
+            font_size: "15dp"
+        Flexible_Input:
+            id: dim_input
+            multiline: False
+            password: False
+            hint_text: 'leave for default'
+            size_hint_y: 1
+            size_hint_x: .5
+            padding_x: "10dp"
+
+            
+<Preview_panel>:
+    orientation: 'vertical'
+    size_hint_y: 0.6
     Label: 
         size_hint_y:0.1
     BoxLayout:
@@ -80,30 +102,16 @@
                 on_ref_press: root.change_status(preview)
             Label:
                 size_hint_x: .5
-        VideoPlayer:
-            source: 'soapbubble.mp4'
+        Image:
+            source: 'largeimage.png'
+        Label:
+            size_hint_y: 0.05
     
     Common_button:
         text: 'Fetch!'
         size_hint_y: 0.3
    
 
-<Img_query_holder>:
-    orientation: 'vertical'
-    BoxLayout:
-        orientation: 'horizontal'
-        Label:
-            id: label
-            text: "Minimum height: "
-            size_hint_x: .35
-        Flexible_Input:
-            id: dim_input
-            multiline: False
-            password: False
-            hint_text: 'leave for default'
-            size_hint_y: 1
-            size_hint_x: .5
-            padding_x: "10dp"
 
 <dropdown_holder>:
     orientation:'vertical'

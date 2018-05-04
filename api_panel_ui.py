@@ -72,8 +72,7 @@ class Search_type_panel(BoxLayout):
         if obj is self.ids.editor_choice:
             ed_c = self.ids.editor_choice
             setattr(ed_c, 'active', True) if ed_c.active is False else setattr(ed_c, 'active', False)
+        else: 
+            [setattr(radio, 'active', True) if radio is obj else \
+            setattr(radio, 'active', False) for radio in self.search_choices]
             
-
-        [setattr(radio, 'active', True) if radio is obj else \
-        setattr(radio, 'active', False) for radio in self.search_choices]
-        
