@@ -7,8 +7,24 @@ class Integrated_api_bar(BoxLayout):
     orientation='vertical'
     def __init__(self):
         super().__init__()
-        self.add_widget(Apibar())
-        self.add_widget(Search_type_panel())
+        self.api_bar=Apibar()
+        self.search_panel=Search_type_panel()
+
+        self.add_widget(self.api_bar)
+        self.add_widget(self.search_panel)
+        self.produce_user_interface()
+
+    def produce_user_interface(self):
+        self.interface={
+            'api_inp_bar':self.api_bar.ids.api_input,
+            'api_save_btn':self.api_bar.ids.save_key,
+            'img_sel_chkbx':self.search_panel.ids.image,
+            'img_sel_lab':self.search_panel.ids.img_lab,
+            'vid_sel_chkbx':self.search_panel.ids.video,
+            'vid_sel_lab':self.search_panel.ids.vid_lab,
+            'bth_sel_chkbx':self.search_panel.ids.both,
+            'bth_sel_lab':self.search_panel.ids.both_lab,
+        }
 
 
 

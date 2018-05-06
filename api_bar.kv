@@ -43,14 +43,11 @@
                 on_release: api_input.focus = True
             
             Common_button:
+                id: save_key
                 text:"Save key"
                 size_hint_x: 0.4
-                on_press:root.save_key()
                 on_release: api_input.focus=True
                 
-
-<Co>
-
 
 
 <Search_type_panel>:
@@ -69,6 +66,7 @@
                 active: True
                 group: 'search_type'
             Label:
+                id: img_lab
                 text: "[ref=image]image[/ref]"
                 size_hint_x: "10"
                 markup: True
@@ -79,6 +77,7 @@
                 active: False
                 group: 'search_type'
             Label:
+                id: vid_lab
                 text: "[ref=video]video[/ref]"
                 size_hint_x: "10"
                 markup: True
@@ -88,6 +87,7 @@
                 active: False
                 group: 'search_type'
             Label:
+                id: both_lab
                 text: "[ref=video]both[/ref]"
                 markup: True
                 size_hint_x: "10"

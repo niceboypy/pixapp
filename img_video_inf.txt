@@ -13,6 +13,7 @@ category                |   SAME
 colors                  |
 order                   |   SAME
 
+
 FOR INPUT BARS
 
 q: 'search term'        |   SAME

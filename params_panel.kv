@@ -63,7 +63,7 @@
         Label:
             id: label
             text: "Minimum height: "
-            size_hint_x: .35
+            size_hint_x: .2
             font_size: "15dp"
         Flexible_Input:
             id: dim_input
@@ -78,38 +78,58 @@
 <Preview_panel>:
     orientation: 'vertical'
     size_hint_y: 0.6
-    Label: 
-        size_hint_y:0.1
+    Label:
+        size_hint_y:0.05
     BoxLayout:
         orientation:'vertical'
+        id: main_preview
+        mytext:'somethingIhaveInHere'
         BoxLayout:
+            
             orientation: 'horizontal' 
             size_hint_y: 0.1
             padding_top: "10dp"
             Label:
                 size_hint_x: .5
             CheckBox:
-                id: preview
+                id: preview_checkbox
                 active:False
                 size_hint_x: 0.01
             Label:
+                id: preview_label
                 size_hint_x: 1
                 text: "[ref=preview]Preview: [/ref]"
                 markup: True
                 font_size: "20dp"
                 halign: 'left'
                 size_hint_x: 0.4
-                on_ref_press: root.change_status(preview)
+            
             Label:
                 size_hint_x: .5
-        Image:
-            source: 'largeimage.png'
-        Label:
-            size_hint_y: 0.05
     
-    Common_button:
-        text: 'Fetch!'
-        size_hint_y: 0.3
+        Image:
+            id: image_panel
+            source: 'test_image.jpg'
+        Label:
+            size_hint_y: 0.02
+        BoxLayout:
+            size_hint_y: .1
+            padding_left: "25dp"
+            orientation:'horizontal'
+            Label:
+                size_hint_x: .4
+            Button:
+                id: previous_button
+                size_hint_x: .2
+                text:'<'
+            Button:
+                id: next_button
+                size_hint_x: .2
+                text: '>'
+            Label:
+                size_hint_x: .4
+            
+    
    
 
 
@@ -140,4 +160,3 @@
         size_hint_y: 0.4
         Label:
             text:''
-    

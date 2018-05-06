@@ -48,7 +48,8 @@ indexed_files = [
     'button_list.png',
     'par_values.py',
     'soapbubble.mp4',
-    'test_image.jpg'
+    'test_image.jpg',
+    'custom_widgets.py'
 ]
 
 

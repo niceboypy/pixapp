@@ -9,13 +9,13 @@ from kivy.properties import ObjectProperty, ListProperty
 from kivy.uix.label import Label
 from kivy.uix.button import Button
 from kivy.uix.progressbar import ProgressBar
-
+from custom_widgets import Common_button, Flexible_Input
 from param_panel_ui import Info_and_preview#dropdown_holder, Img_query_holder, Img_search_preview
 from api_panel_ui import Integrated_api_bar
 
+
 from kivy.uix.spinner import Spinner
 from kivy.uix.bubble import Bubble
-
 Config.set('input', 'mouse', 'mouse, disable_multitouch')
 from kivy.clock import Clock
 
@@ -23,15 +23,6 @@ from kivy.clock import Clock
 # from kivy.storage.jsonstore import JsonStore
 
 # on_press: Clock.schedule_once(lambda *_: setattr(api_input, 'focus', True), 0.1)
-
-class Common_button(Button):
-    def __init__(self, **kwargs):
-        super().__init__(**kwargs)
-
-
-class Flexible_Input(TextInput):
-    def __init__(self, **kwargs):
-        super().__init__(**kwargs)
 
         # def on_touch_down(self, touch):
         #     super(Flexible_Input,self).on_touch_down(touch)
