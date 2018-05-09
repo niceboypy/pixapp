@@ -20,6 +20,30 @@
   <defs
      id="defs4">
     <linearGradient
+       id="linearGradient4180"
+       inkscape:collect="always">
+      <stop
+         id="stop4182"
+         offset="0"
+         style="stop-color:#780000;stop-opacity:1" />
+      <stop
+         id="stop4184"
+         offset="1"
+         style="stop-color:#780000;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient
+       inkscape:collect="always"
+       id="linearGradient4170">
+      <stop
+         style="stop-color:#000000;stop-opacity:1"
+         offset="0"
+         id="stop4172" />
+      <stop
+         style="stop-color:#000000;stop-opacity:1"
+         offset="1"
+         id="stop4174" />
+    </linearGradient>
+    <linearGradient
        inkscape:collect="always"
        id="linearGradient4165">
       <stop
@@ -129,6 +153,26 @@
        y1="547.67487"
        x2="403.04398"
        y2="359.03055" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient4170"
+       id="linearGradient4168"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="translate(-603.46474,183.14878)"
+       x1="403.04398"
+       y1="571.74219"
+       x2="403.04398"
+       y2="202.59303" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient4180"
+       id="linearGradient4178"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="translate(-601.6504,400.12759)"
+       x1="403.04398"
+       y1="571.74219"
+       x2="403.04398"
+       y2="280.95639" />
   </defs>
   <sodipodi:namedview
      id="base"
@@ -137,9 +181,9 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="0.99893222"
-     inkscape:cx="458.35665"
-     inkscape:cy="-7.4250904"
+     inkscape:zoom="1.2233018"
+     inkscape:cx="-279.53537"
+     inkscape:cy="301.03284"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="false"
@@ -262,5 +306,27 @@
        width="530.78149"
        id="rect4161"
        style="opacity:1;fill:url(#linearGradient4163);fill-opacity:1;stroke:#333333;stroke-width:1.41;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
+    <rect
+       rx="2.6378684"
+       inkscape:export-ydpi="90"
+       inkscape:export-xdpi="90"
+       ry="2.6378684"
+       y="568.2428"
+       x="-483.30981"
+       height="127.15425"
+       width="530.78149"
+       id="rect4166"
+       style="opacity:1;fill:url(#linearGradient4168);fill-opacity:1;stroke:#f2f2f2;stroke-width:1.11;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
+    <rect
+       rx="5.2494874"
+       style="opacity:1;fill:url(#linearGradient4178);fill-opacity:1;stroke:#f2f2f2;stroke-width:0.50999999;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       id="rect4176"
+       width="530.78149"
+       height="127.15425"
+       x="-481.49548"
+       y="785.22162"
+       ry="5.2494874"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
   </g>
 </svg>

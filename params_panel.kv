@@ -106,28 +106,34 @@
             
             Label:
                 size_hint_x: .5
+                #fromhere
     
-        Image:
-            id: image_panel
-            source: 'test_image.jpg'
         Label:
             size_hint_y: 0.02
+            
+        BoxLayout:
+            Image:
+                id: image_panel
+                source: 'test_image.jpg'
+
         BoxLayout:
             size_hint_y: .1
             padding_left: "25dp"
             orientation:'horizontal'
             Label:
                 size_hint_x: .4
-            Button:
+            Plain_button:
                 id: previous_button
                 size_hint_x: .2
                 text:'<'
-            Button:
+            Plain_button:
                 id: next_button
                 size_hint_x: .2
                 text: '>'
             Label:
                 size_hint_x: .4
+                #to here
+        
             
     
    

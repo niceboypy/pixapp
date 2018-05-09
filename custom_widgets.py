@@ -6,7 +6,12 @@ class Common_button(Button):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
 
+class Plain_button(Button):
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
 
 class Flexible_Input(TextInput):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
+
+

@@ -70,7 +70,7 @@
                 text: "[ref=image]image[/ref]"
                 size_hint_x: "10"
                 markup: True
-                on_ref_press: root.setstatus(image)
+                # on_ref_press: root.setstatus(image)
 
             CheckBox:
                 id: video
@@ -81,17 +81,17 @@
                 text: "[ref=video]video[/ref]"
                 size_hint_x: "10"
                 markup: True
-                on_ref_press: root.setstatus(video)
+                # on_ref_press: root.setstatus(video)
             CheckBox:
                 id: both
                 active: False
                 group: 'search_type'
             Label:
                 id: both_lab
-                text: "[ref=video]both[/ref]"
+                text: "[ref=both]both[/ref]"
                 markup: True
                 size_hint_x: "10"
-                on_ref_press: root.setstatus(both)
+                # on_ref_press: root.setstatus(both)
 
             Label:
                 #maintains size

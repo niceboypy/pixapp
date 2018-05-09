@@ -10,47 +10,7 @@ import webbrowser, os, sys
 from kivy.properties import ObjectProperty
 from par_values import Values
 from kivy.uix.videoplayer import VideoPlayer
-
-class Change_mixin:
-    def apply_changes(self, changes):
-        if changes: 
-            for change in changes:
-                #     [(
-                # 'Input', 
-                # {'hint_text':'leave for default',
-                # 'bind': {'on_text': self.checkinput()}
-                # }),
-                # ('Label',
-                # {'text':'Minimum height: '})
-                # ]
-                # ('Add', [(Button, {properties}),
-                #           (Button, {properties1})]  )
-
-                if change[0] != 'Add':
-                    Cur_obj = self.items[change[0]]
-                    for props in change[1].keys():
-                        Cur_obj_properties = change[1][props]
-                        if props=='bind':
-                            Cur_obj.bind(**(change[1]['bind']))
-                        else: 
-                            setattr(Cur_obj,
-                                    props,
-                                    Cur_obj_properties)
-                else:
-                    parent = self.items['parent']
-                    
-                    for dynwid in change[1]:
-                        print()
-                        print("dynwin is: ", dynwid)
-                        # time.sleep(10)
-                        print()
-                        self.dynwids.append(dynwid[0](**(dynwid[1])))
-                    
-                    for dynwid in self.dynwids:
-                        parent.add_widget(dynwid)
-
-                    
-
+from mixins import Change_mixin
 
 
 class Img_search_preview(BoxLayout):
@@ -235,7 +195,6 @@ class Info_and_preview(BoxLayout):
         ]   
         # ('Add', [(Button, {properties}),
         #           (Button, {properties1})]  )
-        print("\n\nI have printed, Checkpoint one\n{}".format("&&&&&&&&&&&&&&&&&&&&&&&&&&"))
 
         #################################################################################
         
@@ -243,13 +202,13 @@ class Info_and_preview(BoxLayout):
         ########### QUERY INSTANCE DECLARATIONS #######################################
          #all dropdown instances
 
-        self.dropdowns= [dropdown_holder(language),
+        self.dropdowns=[dropdown_holder(quality),
                         dropdown_holder(img_type),
-                        dropdown_holder(orien),
+                        dropdown_holder(language),
                         dropdown_holder(category),
-                        dropdown_holder(colors),
                         dropdown_holder(order),
-                        dropdown_holder(quality),
+                        dropdown_holder(orien),
+                        dropdown_holder(colors),
                         ]
 
         #all textbox instances
@@ -348,6 +307,7 @@ class Info_and_preview(BoxLayout):
             if text=='':
                 setattr(self, global_def, getattr(Values, global_def))
             else:
+                print("The text is: ", text)
                 Instance.text=getattr(self, global_def)
 
     # def test(self, *ignore):
@@ -370,5 +330,7 @@ class Info_and_preview(BoxLayout):
             'pre_butn': self.preview_panel.ids.previous_button,
             'nxt_butn': self.preview_panel.ids.next_button,
             'save_btn': (self.textboxes[3].dynwids)[0],
-            'brws_btn': (self.textboxes[3].dynwids)[1]
+            'brws_btn': (self.textboxes[3].dynwids)[1],
+            'drpdwn_par': self.dropdowns[0].parent,
+            'display_par':self.preview_panel.ids.image_panel.parent
         }

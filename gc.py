@@ -49,7 +49,12 @@ indexed_files = [
     'par_values.py',
     'soapbubble.mp4',
     'test_image.jpg',
-    'custom_widgets.py'
+    'custom_widgets.py',
+    'custom_behaviour.py',
+    'largeimage.png',
+    'mixins.py',
+    'plain_button_dep.png',
+    'plain_button.png',
 ]
 
 

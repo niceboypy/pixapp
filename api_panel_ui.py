@@ -24,6 +24,7 @@ class Integrated_api_bar(BoxLayout):
             'vid_sel_lab':self.search_panel.ids.vid_lab,
             'bth_sel_chkbx':self.search_panel.ids.both,
             'bth_sel_lab':self.search_panel.ids.both_lab,
+            'sch_typ_pan':self.search_panel
         }
 
 
@@ -91,4 +92,5 @@ class Search_type_panel(BoxLayout):
         else: 
             [setattr(radio, 'active', True) if radio is obj else \
             setattr(radio, 'active', False) for radio in self.search_choices]
+        print("I have fired up")
             

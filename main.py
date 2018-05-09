@@ -9,10 +9,11 @@ from kivy.properties import ObjectProperty, ListProperty
 from kivy.uix.label import Label
 from kivy.uix.button import Button
 from kivy.uix.progressbar import ProgressBar
-from custom_widgets import Common_button, Flexible_Input
+from custom_widgets import Common_button, Flexible_Input, Plain_button
 from param_panel_ui import Info_and_preview#dropdown_holder, Img_query_holder, Img_search_preview
 from api_panel_ui import Integrated_api_bar
-
+from custom_behaviour import Behaviour
+from mixins import Fetch_mixin
 
 from kivy.uix.spinner import Spinner
 from kivy.uix.bubble import Bubble
@@ -43,29 +44,37 @@ from kivy.clock import Clock
             # print(pos)
 
 
-class Integration(BoxLayout):
+class Integration(BoxLayout, Behaviour):
     def __init__(self,**kwargs):
         super().__init__(**kwargs)
         self.padding="10dp"
-        progress = ProgressBar(max=100, size_hint_y=0.01)
 
-        self.add_widget(progress)
-        self.add_widget(Apiholder(size_hint_y= .2))
-        progress.value=50
-        self.add_widget(Paramholder(size_hint_y= 1))
+        self.progress = ProgressBar(max=100, size_hint_y=0.01)
+        self.apiholder = Apiholder(size_hint_y= .2)#contain self.interface
+        self.paramholder = Paramholder(size_hint_y= 1)#contain self.interface
 
+        self.add_widget(self.progress)
+        self.add_widget(self.apiholder)
+        self.add_widget(self.paramholder)
 
-class Apiholder(BoxLayout):
+        self.add_behaviour()
+
+class Apiholder(BoxLayout, Fetch_mixin):
     def __init__(self,**kwargs):
         super().__init__(**kwargs)
         self.orientation = 'vertical'
-        self.add_widget(Integrated_api_bar())
+        self.integrated_api_bar=Integrated_api_bar()
+        self.interface=self.integrated_api_bar.interface
+
+        self.add_widget(self.integrated_api_bar)
 
 
-class Paramholder(BoxLayout):
+class Paramholder(BoxLayout, Fetch_mixin):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-        self.add_widget(Info_and_preview())
+        self.Info_and_preview=Info_and_preview()
+        self.interface = self.Info_and_preview.interface
+        self.add_widget(self.Info_and_preview)
         
 
 
