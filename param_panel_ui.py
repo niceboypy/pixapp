@@ -187,7 +187,7 @@ class Info_and_preview(BoxLayout):
             'size_hint_x': (common_size_hint_x_lab)}),
             ('Add', [(Common_button, {'size_hint_x': dynamic_button_size, 
                                     'font_size': '10dp',
-                                    'text': 'Save To\nPath'}),
+                                    'text': 'Save As\nDefault'}),
                     (Common_button, {'size_hint_x': dynamic_button_size,
                                 'font_size':'10dp',
                                 'text': 'Browse..'})
@@ -323,7 +323,7 @@ class Info_and_preview(BoxLayout):
     def produce_user_interface(self):
         self.interface={
             'dropdowns': self.dropdowns,
-            'textboxes': self.textboxes,
+            'textboxes': [inst.items['Input'] for inst in  self.textboxes],
             'prvw_chkbx': self.preview_panel.ids.preview_checkbox,
             'prvw_label': self.preview_panel.ids.preview_label,
             'img_display': self.preview_panel.ids.image_panel,

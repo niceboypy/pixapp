@@ -11,8 +11,6 @@ if not os.path.exists(def_dir):
     os.mkdir(def_dir)
 
 
-
-
 class Values:
     language = ('en', 'cs', 'da', 'de', 'es', 'fr', 'id','it', 'hu', 'nl', 'no', 'pl', 'pt', 'ro', 'sk', 'fi', 'sv', 'tr', 'vi', 'th', 'bg', 'ru', 'el', 'ja', 'ko', 'zh')
     image_type=("photo","illustration", "vector", 'all')
