@@ -55,6 +55,7 @@ indexed_files = [
     'mixins.py',
     'plain_button_dep.png',
     'plain_button.png',
+    'none.png'
 ]
 
 

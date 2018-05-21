@@ -14,6 +14,9 @@ class Behaviour:
         #behaviour for browsing button#search id:
         self.add_browser_behaviour(self.paramholder)
 
+        #behaviour for preview panel
+        self.add_preview_behaviour(self.apiholder, self.paramholder)
+
     ####################### BEHAVIOUR FOR RADIO BUTTONS: #23D$ ############################
     def add_search_type_behaviour(self, *objs):
         apiholder, paramholder = objs
@@ -35,7 +38,7 @@ class Behaviour:
         extra_dropdown = paramholder.get('dropdowns')[6]
         display_par = paramholder.get('display_par')
         image_panel = paramholder.get('img_display')
-        video_panel = VideoPlayer(source='soapbubble.mp4')
+        video_panel = VideoPlayer()#source='magic.mp4')
 
 
         Bind(img_sel_lab, on_ref_press =  lambda *_: self.switch('add',sch_typ_pan, img_sel_chkbx, extra_dropdown, from_parent, video_panel, display_par, image_panel))
@@ -63,7 +66,7 @@ class Behaviour:
                 print("Exception")
     ###############################################################################################
 
-    ##########################BEHAVIOUR FOR BROWSER BUTTON #24D$ #####################################################################
+    ########################## BEHAVIOUR FOR BROWSER BUTTON #24D$ #####################################################################
     def add_browser_behaviour(self, *obj):
         paramholder, *_ = obj
         save_btn=paramholder.get('brws_btn')
@@ -82,7 +85,7 @@ class Behaviour:
         popup = save_dialog()
 
         def updatepopup(mainpopup, filechooser):
-            nonlocal output_fld
+            # nonlocal output_fld
             selection=filechooser.dialogue.selection[0]#multi select is false, only one element
             if not os.path.isdir(selection):
                 selection=os.path.dirname(selection)
@@ -108,4 +111,99 @@ class Behaviour:
         self.Popup.open()
     ###############################################################################################
         
+    ######################### BEHAVIOUR FOR PREVIEW PANEL #################################
+    def add_preview_behaviour(self, apiholder, paramholder):
         
+        self.curindex=0
+        self.image_list=[]
+
+        def yield_list(path):
+            """yield items in path"""
+            for i in os.listdir(path):
+                yield i
+        
+        def create_list(Type='img'):
+            """create a new list on every list_size_item preview"""
+            list_size=10
+            for i in range(list_size):
+                try:
+                    x = next(self.gen_obj)
+                    print('try executed')
+                except:
+                    print('except executed')
+                    return None
+                else:
+                    print('finally executed')
+                    if Type=='img':
+                        if (x.endswith('.jpg') or x.endswith('.png')):
+                            self.image_list.append(x)
+                        elif (x.endswith('.svg')):
+                            self.image_list.append(os.path.join(os.getcwd(),'no_svg.png'))
+
+
+
+        image_info = paramholder.get('image_info')
+        image_dir = paramholder.get('textboxes')[3]
+        image_display = paramholder.get('img_display')
+        prev_btn = paramholder.get('prev_btn')
+        next_btn = paramholder.get('next_btn')
+        display = paramholder.get('img_display')
+        prvw_chkbox = paramholder.get('prvw_chkbx')
+        prvw_label = paramholder.get('prvw_label')
+
+        img_sel_chkbox = apiholder.get('img_sel_chkbx')
+        vid_sel_chkbox = apiholder.get('vid_sel_chkbx')
+
+        image_dir_path = image_dir.text if image_dir.text.strip() != '' else Values.def_path
+
+        self.gen_obj = yield_list(image_dir_path)
+        
+
+        def select_behaviour(*objs):
+            img_sel_chkbox, prvw_chkbox, image_display, prev_btn, next_btn, image_dir= objs
+            if img_sel_chkbox.active:
+                if prvw_chkbox.active:
+                    prvw_chkbox.active=False
+                    image_display.source='none.png'
+                    prev_btn.bind(on_press=lambda *_: None)
+                    next_btn.bind(on_press=lambda *_: None)
+                else:
+                    prvw_chkbox.active=True
+                    image_display.source='test_image.jpg'
+
+                    print("The image list is: ", self.image_list)
+                    print("The size is: ", len(self.image_list))
+
+                    def getimage(image_dir):
+                        create_list(Type='img')
+                        try:
+                            item = self.image_list[self.curindex]
+                            if (os.path.exists(item)):
+                                x = item
+                            else:
+                                x = os.path.join(image_dir.text, self.image_list[self.curindex])
+                        except IndexError:
+                            # if index is out of bound
+                            # then reset to last element
+                            self.curindex-=1
+                            if self.image_list:
+                                #self.image_list[self.curindex]
+                                return os.path.join(image_dir.text, self.image_list[self.curindex])
+                            else:
+                                return 'none.png'
+                            print("Index error caught")
+                        else:
+                            self.curindex += 1
+                            return x
+
+                    next_btn.bind(on_press=lambda*_: setattr(image_display, 'source', getimage(image_dir)))
+
+
+
+        
+        prvw_label.bind(on_ref_press=lambda*_: select_behaviour(img_sel_chkbox,
+                                prvw_chkbox,image_display, prev_btn, next_btn,
+                                image_dir))
+        # next_btn.bind(on_press=lambda *_: setattr(image_display, 'source', next_file(self.files, image_dir_path)))
+
+    ###############################################################################################

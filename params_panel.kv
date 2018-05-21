@@ -30,31 +30,7 @@
             multiline:False
             hint_text: "Image to fetch e.g. car"
         
-    # BoxLayout:
-    #     orientation:'horizontal'
-    #     size_hint_y: 0.2
-    #     padding_bottom: "10dp"
-    #     Label:
-    #         text: 'Multisearch: '
-    #         size_hint_x: 0.3
-    #     TextInput:
-    #         multiline:True
-    #         hint_text: "use ',' to separate"
-    # BoxLayout:
-    #     orientation:'horizontal'
-    #     size_hint_y: 0.2
-    #     padding_bottom: "10dp"
-    #     Label:
-    #         text: 'Output: '
-    #         size_hint_x: 0.3
-    #     TextInput:
-    #         multiline:True
-    #         size_hint_x: 0.8
-    #         hint_text: "use ',' to separate"
-    #     Common_button:
-    #         size_hint_x: 0.2
-    #         text: 'Save to..'
-    #         font_size: "12dp"
+   
 
 <Img_query_holder>:
     orientation: 'vertical'
@@ -109,12 +85,16 @@
                 #fromhere
     
         Label:
-            size_hint_y: 0.02
+            size_hint_y: 0.15
+            id: image_information
+            text: ""
+            color: (.2, .2, .2, 1)
+            font_size: "15dp"
             
         BoxLayout:
             Image:
                 id: image_panel
-                source: 'test_image.jpg'
+                source: 'none.png'
 
         BoxLayout:
             size_hint_y: .1

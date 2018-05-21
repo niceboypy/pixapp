@@ -245,7 +245,7 @@ class Info_and_preview(BoxLayout):
         self.display_parent=self.preview_panel.ids.main_preview
         self.image_panel=self.preview_panel.ids.image_panel
         self.cur_panel='img' #store current panel information
-        self.video_panel = VideoPlayer(source='soapbubble.mp4')
+        self.video_panel = VideoPlayer()#source='magic.mp4')
 
         self.right_layout.add_widget(self.preview_panel)
         ############link button#########################3
@@ -332,5 +332,8 @@ class Info_and_preview(BoxLayout):
             'save_btn': (self.textboxes[3].dynwids)[0],
             'brws_btn': (self.textboxes[3].dynwids)[1],
             'drpdwn_par': self.dropdowns[0].parent,
-            'display_par':self.preview_panel.ids.image_panel.parent
+            'display_par':self.preview_panel.ids.image_panel.parent,
+            'image_info':self.preview_panel.ids.image_information,
+            'prev_btn': self.preview_panel.ids.previous_button,
+            'next_btn': self.preview_panel.ids.next_button
         }
