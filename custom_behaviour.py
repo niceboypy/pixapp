@@ -142,9 +142,9 @@ class Behaviour:
 
 
 
-        image_info = paramholder.get('image_info')
         image_dir = paramholder.get('textboxes')[3]
         image_display = paramholder.get('img_display')
+        self.image_info = paramholder.get('image_info')
         prev_btn = paramholder.get('prev_btn')
         next_btn = paramholder.get('next_btn')
         display = paramholder.get('img_display')
@@ -160,22 +160,38 @@ class Behaviour:
         
 
         def select_behaviour(*objs):
-            img_sel_chkbox, prvw_chkbox, image_display, prev_btn, next_btn, image_dir= objs
+            img_sel_chkbox, prvw_chkbox, image_display, prev_btn, next_btn, image_dir = objs
+
             if img_sel_chkbox.active:
+                create_list(Type='img')
                 if prvw_chkbox.active:
+                    self.image_info.text=''            
                     prvw_chkbox.active=False
                     image_display.source='none.png'
                     prev_btn.bind(on_press=lambda *_: None)
                     next_btn.bind(on_press=lambda *_: None)
                 else:
                     prvw_chkbox.active=True
-                    image_display.source='test_image.jpg'
+                    create_list(Type='img')
+                    if self.image_list:
+                        try:
+                            image_display.source=os.path.join(image_dir.text, self.image_list[self.curindex])
+                            self.curindex += 1
+                        except IndexError:
+                            self.curindex-=1
+                            if self.image_list:
+                                #self.image_list[self.curindex]
+                                return os.path.join(image_dir.text, self.image_list[self.curindex])
+                            else:
+                                return 'none.png'
+                    else:
+                        image_display.source='none.png'
 
-                    print("The image list is: ", self.image_list)
-                    print("The size is: ", len(self.image_list))
-
-                    def getimage(image_dir):
-                        create_list(Type='img')
+                    
+                    def getimagenext(image_dir):
+                        
+                        print("The list is: ", self.image_list)
+                        print("The current index is: ", self.curindex)
                         try:
                             item = self.image_list[self.curindex]
                             if (os.path.exists(item)):
@@ -191,15 +207,37 @@ class Behaviour:
                                 return os.path.join(image_dir.text, self.image_list[self.curindex])
                             else:
                                 return 'none.png'
-                            print("Index error caught")
                         else:
                             self.curindex += 1
+                            name = x.split(os.sep)[-1] #strip the directory out
+                            self.image_info.text='' if 'svg' in name else name
+                            return x
+                        
+                    def getimageprev(image_dir):
+                        
+                        print("The list is: ", self.image_list)
+                        print("The current index is: ", self.curindex)
+                        try:
+                            if self.curindex<0: raise IndexError
+                            item=self.image_list[self.curindex]
+                            if(os.path.exists(item)):
+                                x = item
+                            else:
+                                x = os.path.join(image_dir.text, self.image_list[self.curindex])
+                        except IndexError:
+                            self.curindex += 1
+                            if self.image_list:
+                                return os.path.join(image_dir.text, self.image_list[self.curindex])
+                            else:
+                                return 'none.png'
+                        else:
+                            self.curindex -=1
                             return x
 
-                    next_btn.bind(on_press=lambda*_: setattr(image_display, 'source', getimage(image_dir)))
+                    next_btn.bind(on_press=lambda*_: setattr(image_display, 'source', getimagenext(image_dir)))
+                    prev_btn.bind(on_press=lambda*_: setattr(image_display, 'source', getimageprev(image_dir)))
 
-
-
+                    
         
         prvw_label.bind(on_ref_press=lambda*_: select_behaviour(img_sel_chkbox,
                                 prvw_chkbox,image_display, prev_btn, next_btn,
