@@ -114,7 +114,7 @@ class Behaviour:
     ######################### BEHAVIOUR FOR PREVIEW PANEL #################################
     def add_preview_behaviour(self, apiholder, paramholder):
         
-        self.curindex=0
+        self.curindex=-1
         self.image_list=[]
 
         def yield_list(path):
@@ -124,27 +124,36 @@ class Behaviour:
         
         def create_list(Type='img'):
             """create a new list on every list_size_item preview"""
-            list_size=10
+            list_size=13 #the list size to be generated
             for i in range(list_size):
                 try:
                     x = next(self.gen_obj)
-                    print('try executed')
                 except:
-                    print('except executed')
                     return None
                 else:
-                    print('finally executed')
                     if Type=='img':
                         if (x.endswith('.jpg') or x.endswith('.png')):
                             self.image_list.append(x)
                         elif (x.endswith('.svg')):
                             self.image_list.append(os.path.join(os.getcwd(),'no_svg.png'))
-
+            
+            # denotes if list contains items
+            if self.image_list:
+                return True
+            else:
+                return False
 
 
         image_dir = paramholder.get('textboxes')[3]
         image_display = paramholder.get('img_display')
+
+        self.prev_dir = image_dir.text # save the value of previous directory - to   
+                                       # check against the output path 
+                                       # to form a list
+
         self.image_info = paramholder.get('image_info')
+        self.image_info.text='Preview images on output path'
+
         prev_btn = paramholder.get('prev_btn')
         next_btn = paramholder.get('next_btn')
         display = paramholder.get('img_display')
@@ -154,94 +163,123 @@ class Behaviour:
         img_sel_chkbox = apiholder.get('img_sel_chkbx')
         vid_sel_chkbox = apiholder.get('vid_sel_chkbx')
 
-        image_dir_path = image_dir.text if image_dir.text.strip() != '' else Values.def_path
-
-        self.gen_obj = yield_list(image_dir_path)
-        
-
         def select_behaviour(*objs):
+            """callback on preview selection, selects image and 
+                video preview behaviour"""
+
             img_sel_chkbox, prvw_chkbox, image_display, prev_btn, next_btn, image_dir = objs
+            image_dir.text = image_dir.text if os.path.exists(image_dir.text) else Values.def_path
+
+            # create a new generator object on every press of
+            # preview reference label, this is the only thing
+            # that updates the directory
+            #because the directory is traversed using a generator object
+            self.gen_obj = yield_list(image_dir.text)
+
+
+            def getitem(image_dir, inrfac):
+                # self.curdir = image_dir 
+                nonlocal image_display
+                if os.path.exists(image_dir):  
+                    #check if the path has changed
+                    #if yes, reset all the values
+                    #create new generator for the path
+                    #and set the list values 
+                    if image_dir != self.prev_dir:
+                        self.gen_obj = yield_list(image_dir)
+                        self.image_list=[]
+                        create_list(Type='img')
+                        print("The image list is: ", self.image_list)
+                        self.curindex=-1
+
+                    self.prev_dir = image_dir
+
+                if self.image_list:
+                    try:
+                        # try getting image from the
+                        # list currently in existence
+                        self.curindex += inrfac
+                        if self.curindex < 0: self.curindex = 0
+                        cur_image = self.image_list[self.curindex]
+                        self.prev_image = cur_image
+                    except:
+                        #if that's an index error
+                        try:
+                            # see if the list can be extended since
+                            # only list item(see in create_list function)
+                            # elements can are added to the list at a time to save
+                            # memory overhead
+                            create_list(Type='img')
+                            cur_image = self.image_list[self.curindex]
+                            self.curindex += inrfac
+                            print("The extended list is: ", self.image_list)
+                        except IndexError:
+
+                            if self.curindex > (len(self.image_list)-1):
+                                self.curindex = len(self.image_list) -1 
+                            elif self.curindex < 0:
+                                self.curindex = 0
+                            cur_image = self.image_list[self.curindex]
+
+                    if not os.path.exists(cur_image):
+                        #if the image found is not a path
+                        #then, update the information label
+                        #that displays image name above the preview display
+                        self.image_info.text=cur_image
+                        #then make it into a path and return the value
+                        return os.path.join(self.prev_dir, cur_image)
+                    else:
+                        #return cur_image as one of the condition images
+                        #condition images-> e.g. images that represent a state
+                        #e.g. invalid=none.png, no_svg.png
+                        self.image_info.text=''
+                        return cur_image
+                else:
+                    self.image_info.text='No Images Found'
+                    return 'none.png'
+
+
+            def getprev(image_dir):
+                return getitem(image_dir, -1)
+            
+            def getnext(image_dir):
+                return getitem(image_dir, 1)
 
             if img_sel_chkbox.active:
-                create_list(Type='img')
-                if prvw_chkbox.active:
-                    self.image_info.text=''            
-                    prvw_chkbox.active=False
+                #we create a new list
+                if create_list(Type='img'):
+                    if prvw_chkbox.active:
+                        prvw_chkbox.active=False
+                        image_display.source='none.png'
+                        prev_btn.bind(on_press=lambda *_: None)
+                        next_btn.bind(on_press=lambda *_: None)
+                        self.image_info.text='Preview images on output path'
+                        print("No binding completed,")
+                    else:
+                        prvw_chkbox.active = True
+                        #code to recontinue from previously left spot
+                        if self.image_list:
+                            if self.curindex <0: self.curindex=0
+                            self.image_info.text = self.image_list[self.curindex]
+                            if not os.path.exists(image_dir.text):
+                                image_dir.text = Values.def_path
+                            if os.path.exists(self.image_list[self.curindex]):
+                                image_display.source = self.image_list[self.curindex]
+                            else:
+                                image_display.source = os.path.join(image_dir.text, self.image_list[self.curindex])
+                            
+                        #rebind buttons to traverse
+                        next_btn.bind(on_press=lambda*_: setattr(image_display, 'source', getnext(image_dir.text)))
+                        prev_btn.bind(on_press=lambda*_: setattr(image_display, 'source', getprev(image_dir.text)))
+                else:
+                    self.image_info.text = 'No images found'
                     image_display.source='none.png'
                     prev_btn.bind(on_press=lambda *_: None)
                     next_btn.bind(on_press=lambda *_: None)
-                else:
-                    prvw_chkbox.active=True
-                    create_list(Type='img')
-                    if self.image_list:
-                        try:
-                            image_display.source=os.path.join(image_dir.text, self.image_list[self.curindex])
-                            self.curindex += 1
-                        except IndexError:
-                            self.curindex-=1
-                            if self.image_list:
-                                #self.image_list[self.curindex]
-                                return os.path.join(image_dir.text, self.image_list[self.curindex])
-                            else:
-                                return 'none.png'
-                    else:
-                        image_display.source='none.png'
 
-                    
-                    def getimagenext(image_dir):
-                        
-                        print("The list is: ", self.image_list)
-                        print("The current index is: ", self.curindex)
-                        try:
-                            item = self.image_list[self.curindex]
-                            if (os.path.exists(item)):
-                                x = item
-                            else:
-                                x = os.path.join(image_dir.text, self.image_list[self.curindex])
-                        except IndexError:
-                            # if index is out of bound
-                            # then reset to last element
-                            self.curindex-=1
-                            if self.image_list:
-                                #self.image_list[self.curindex]
-                                return os.path.join(image_dir.text, self.image_list[self.curindex])
-                            else:
-                                return 'none.png'
-                        else:
-                            self.curindex += 1
-                            name = x.split(os.sep)[-1] #strip the directory out
-                            self.image_info.text='' if 'svg' in name else name
-                            return x
-                        
-                    def getimageprev(image_dir):
-                        
-                        print("The list is: ", self.image_list)
-                        print("The current index is: ", self.curindex)
-                        try:
-                            if self.curindex<0: raise IndexError
-                            item=self.image_list[self.curindex]
-                            if(os.path.exists(item)):
-                                x = item
-                            else:
-                                x = os.path.join(image_dir.text, self.image_list[self.curindex])
-                        except IndexError:
-                            self.curindex += 1
-                            if self.image_list:
-                                return os.path.join(image_dir.text, self.image_list[self.curindex])
-                            else:
-                                return 'none.png'
-                        else:
-                            self.curindex -=1
-                            return x
-
-                    next_btn.bind(on_press=lambda*_: setattr(image_display, 'source', getimagenext(image_dir)))
-                    prev_btn.bind(on_press=lambda*_: setattr(image_display, 'source', getimageprev(image_dir)))
-
-                    
         
         prvw_label.bind(on_ref_press=lambda*_: select_behaviour(img_sel_chkbox,
                                 prvw_chkbox,image_display, prev_btn, next_btn,
                                 image_dir))
-        # next_btn.bind(on_press=lambda *_: setattr(image_display, 'source', next_file(self.files, image_dir_path)))
 
     ###############################################################################################

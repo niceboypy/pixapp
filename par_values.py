@@ -34,8 +34,8 @@ class Values:
     #3)word list
     #4)path
 
-    numeric_value=re.compile('^[0-9]+$')
-    fetch_values=re.compile('^[a-zA-Z\ ]+$')
-    multi_search=re.compile('^[a-zA-Z][a-zA-Z, ]*$')
+    numeric_value=re.compile(r'^[0-9]+$')
+    fetch_values=re.compile(r'^[a-zA-Z\ ]+$')
+    multi_search=re.compile(r'^[a-zA-Z][a-zA-Z, ]*$')
     #here only linux path file
     output_path=re.compile(r'^[a-zA-Z/_0-9]*$')
