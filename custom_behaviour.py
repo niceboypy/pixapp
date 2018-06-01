@@ -129,7 +129,8 @@ class Behaviour:
                 try:
                     x = next(self.gen_obj)
                 except:
-                    return None
+                    #ignore the exception
+                    pass
                 else:
                     if Type=='img':
                         if (x.endswith('.jpg') or x.endswith('.png')):
@@ -154,8 +155,8 @@ class Behaviour:
         self.image_info = paramholder.get('image_info')
         self.image_info.text='Preview images on output path'
 
-        prev_btn = paramholder.get('prev_btn')
-        next_btn = paramholder.get('next_btn')
+        self.prev_btn = paramholder.get('prev_btn')
+        self.next_btn = paramholder.get('next_btn')
         display = paramholder.get('img_display')
         prvw_chkbox = paramholder.get('prvw_chkbx')
         prvw_label = paramholder.get('prvw_label')
@@ -167,7 +168,7 @@ class Behaviour:
             """callback on preview selection, selects image and 
                 video preview behaviour"""
 
-            img_sel_chkbox, prvw_chkbox, image_display, prev_btn, next_btn, image_dir = objs
+            img_sel_chkbox, prvw_chkbox, image_display, self.prev_btn, self.next_btn, image_dir = objs
             image_dir.text = image_dir.text if os.path.exists(image_dir.text) else Values.def_path
 
             # create a new generator object on every press of
@@ -176,10 +177,15 @@ class Behaviour:
             #because the directory is traversed using a generator object
             self.gen_obj = yield_list(image_dir.text)
 
-
+            import random
             def getitem(image_dir, inrfac):
                 # self.curdir = image_dir 
                 nonlocal image_display
+                print("*********************")
+                print("FROM GETITEM, THE LIST IS: ", self.image_list)
+                print("The current index is: ", self.curindex)
+                print("The random is: ", random.randrange(1, 100))
+                print("*********************")
                 if os.path.exists(image_dir):  
                     #check if the path has changed
                     #if yes, reset all the values
@@ -190,8 +196,8 @@ class Behaviour:
                         self.image_list=[]
                         create_list(Type='img')
                         print("The image list is: ", self.image_list)
-                        self.curindex=-1
-
+                        print("The index is: ", self.curindex)
+                        self.curindex = -1
                     self.prev_dir = image_dir
 
                 if self.image_list:
@@ -238,7 +244,6 @@ class Behaviour:
                     self.image_info.text='No Images Found'
                     return 'none.png'
 
-
             def getprev(image_dir):
                 return getitem(image_dir, -1)
             
@@ -251,11 +256,17 @@ class Behaviour:
                     if prvw_chkbox.active:
                         prvw_chkbox.active=False
                         image_display.source='none.png'
-                        prev_btn.bind(on_press=lambda *_: None)
-                        next_btn.bind(on_press=lambda *_: None)
                         self.image_info.text='Preview images on output path'
+                        self.image_list=[]
+                        self.curindex=-1
+                        
+                        self.next_btn.unbind(on_press=self.get_next_func)
+                        self.prev_btn.unbind(on_press=self.get_prev_func)
+
+                        print("Block #2342 executed")
                         print("No binding completed,")
                     else:
+                        print("The list is: ", self.image_list)
                         prvw_chkbox.active = True
                         #code to recontinue from previously left spot
                         if self.image_list:
@@ -269,17 +280,23 @@ class Behaviour:
                                 image_display.source = os.path.join(image_dir.text, self.image_list[self.curindex])
                             
                         #rebind buttons to traverse
-                        next_btn.bind(on_press=lambda*_: setattr(image_display, 'source', getnext(image_dir.text)))
-                        prev_btn.bind(on_press=lambda*_: setattr(image_display, 'source', getprev(image_dir.text)))
+
+                        self.get_next_func=lambda*_: setattr(image_display, 'source', getnext(image_dir.text))
+                        self.get_prev_func=lambda*_: setattr(image_display, 'source', getprev(image_dir.text))
+                        self.next_btn.bind(on_press=self.get_next_func)
+                        self.prev_btn.bind(on_press=self.get_prev_func)
+                        
                 else:
                     self.image_info.text = 'No images found'
                     image_display.source='none.png'
-                    prev_btn.bind(on_press=lambda *_: None)
-                    next_btn.bind(on_press=lambda *_: None)
+                    self.prev_btn.bind(on_press=lambda *_: None)
+                    self.next_btn.bind(on_press=lambda *_: None)
+                    print("The list is: some#2343", self.image_list)
+                    print("Block some#2343 executed")
 
         
         prvw_label.bind(on_ref_press=lambda*_: select_behaviour(img_sel_chkbox,
-                                prvw_chkbox,image_display, prev_btn, next_btn,
+                                prvw_chkbox,image_display, self.prev_btn, self.next_btn,
                                 image_dir))
 
     ###############################################################################################
