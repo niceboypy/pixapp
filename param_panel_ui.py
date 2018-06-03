@@ -233,7 +233,7 @@ class Info_and_preview(BoxLayout):
         for widget in self.dropdowns:
           self.left_layout_drop.add_widget(widget)  
         
-                #############  RIGHT PANEL QUERY HOLDERS ############################################
+        #############  RIGHT PANEL QUERY HOLDERS ############################################
         self.right_layout.add_widget(self.textboxes[1])
         self.right_layout.add_widget(self.textboxes[2])
         self.right_layout.add_widget(self.textboxes[0])
@@ -245,7 +245,7 @@ class Info_and_preview(BoxLayout):
         self.display_parent=self.preview_panel.ids.main_preview
         self.image_panel=self.preview_panel.ids.image_panel
         self.cur_panel='img' #store current panel information
-        self.video_panel = VideoPlayer()#source='magic.mp4')
+        self.video_panel = VideoPlayer(source='none.mp4')#source='magic.mp4')
 
         self.right_layout.add_widget(self.preview_panel)
         ############link button#########################3
@@ -327,6 +327,7 @@ class Info_and_preview(BoxLayout):
             'prvw_chkbx': self.preview_panel.ids.preview_checkbox,
             'prvw_label': self.preview_panel.ids.preview_label,
             'img_display': self.preview_panel.ids.image_panel,
+            'vid_display': self.video_panel,
             'pre_butn': self.preview_panel.ids.previous_button,
             'nxt_butn': self.preview_panel.ids.next_button,
             'save_btn': (self.textboxes[3].dynwids)[0],
@@ -336,4 +337,5 @@ class Info_and_preview(BoxLayout):
             'image_info':self.preview_panel.ids.image_information,
             'prev_btn': self.preview_panel.ids.previous_button,
             'next_btn': self.preview_panel.ids.next_button
+
         }
