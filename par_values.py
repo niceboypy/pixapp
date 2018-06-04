@@ -8,7 +8,7 @@ def_dir = os.path.join(os.sep,'home',getpass.getuser(), 'Desktop',
             'mass_fetch')
 
 if not os.path.exists(def_dir):
-    os.mkdir(def_dir)
+    os.makedirs(def_dir)
 
 
 class Values:

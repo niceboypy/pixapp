@@ -17,7 +17,8 @@ class Behaviour:
         #behaviour for preview panel
         self.add_preview_behaviour(self.apiholder, self.paramholder)
 
-    ####################### BEHAVIOUR FOR RADIO BUTTONS: #23D$ ############################
+    ###############################################################################################
+    ####################### BEHAVIOUR FOR RADIO BUTTONS: #23D$ ####################################
     def add_search_type_behaviour(self, *objs):
         apiholder, paramholder = objs
 
@@ -44,15 +45,15 @@ class Behaviour:
         self.item_display = image_panel #current panel that we have at preview
 
         Bind(img_sel_lab, on_ref_press =  lambda *_: self.switch('add',sch_typ_pan, img_sel_chkbx, extra_dropdown, from_parent, video_panel, display_par, image_panel))
-        Bind(vid_sel_lab, on_ref_press =  lambda *_: self.switch('remove',sch_typ_pan, vid_sel_chkbx, extra_dropdown, from_parent, image_panel, display_par, video_panel))
-        Bind(bth_sel_lab, on_ref_press =  lambda *_: self.switch('add',sch_typ_pan, bth_sel_chkbx, extra_dropdown, from_parent, both=True))
+        Bind(vid_sel_lab, on_ref_press =  lambda *_: self.switch('remove',sch_typ_pan, vid_sel_chkbx, extra_dropdown, from_parent, image_panel, display_par, video_panel, both='vid'))
+        Bind(bth_sel_lab, on_ref_press =  lambda *_: self.switch('remove',sch_typ_pan, bth_sel_chkbx, extra_dropdown, from_parent, image_panel, display_par, video_panel, both='bth'))
     
     def switch(self, action, panel, obj, rmv_widgt, from_parent, replc_pan=None, from_dis_par=None, with_pan=None, both=None):
         panel.setstatus(obj)
         if action=='remove':
             from_parent.remove_widget(rmv_widgt)
             try:
-                self.list_type='vid'
+                self.list_type=both
                 from_dis_par.remove_widget(replc_pan)
                 from_dis_par.add_widget(with_pan)
             except: 
@@ -60,23 +61,21 @@ class Behaviour:
             
         else:
             try:
-                if both:
-                    self.list_type=both
-                else:
-                    self.list_type='img'
+                self.list_type='img'
                 from_parent.add_widget(rmv_widgt)
                 from_dis_par.remove_widget(replc_pan)
                 from_dis_par.add_widget(with_pan)
             except:
                 pass
         
-        self.item_list = []
-        self.item_display  = with_pan
+        self.item_list = []            #with_pan holds whatever panel is in the current display
+        self.item_display  = with_pan  #set the panel to whichever panel the radio indicates
         self.image_info.text=''
-        
+    ###############################################################################################
     ###############################################################################################
 
-    ########################## BEHAVIOUR FOR BROWSER BUTTON #24D$ #####################################################################
+    ###############################################################################################
+    ########################## BEHAVIOUR FOR BROWSER BUTTON #24D$ #################################
     def add_browser_behaviour(self, *obj):
         paramholder, *_ = obj
         save_btn=paramholder.get('brws_btn')
@@ -121,16 +120,8 @@ class Behaviour:
         self.Popup.open()
     ###############################################################################################
         
-    ######################### BEHAVIOUR FOR PREVIEW PANEL #25D$ #################################
-    # def rel_bind(self, release, bind, objs):
-    #     """release and bind buttons"""
-    #     for i in range(len(objs)):
-    #         objs[i].unbind(on_press=release[i])
-    #         try:
-    #             objs[i].bind(on_press=bind[i])
-    #         except:
-    #             objs[i].bind(on_press=bind[0])
-            
+    ###############################################################################################
+    ######################### BEHAVIOUR FOR PREVIEW PANEL #25D$ ###################################
 
     def add_preview_behaviour(self, apiholder, paramholder):
         """add preview behaviour to preview panel"""
@@ -168,7 +159,7 @@ class Behaviour:
         
         def create_list(Type='img'):
             """create a new list on every list_size_item preview"""
-            list_size=2 #the list size to be generated
+            list_size=10 #the list size to be generated
             for i in range(list_size):
                 try:
                     item = next(self.gen_obj)
@@ -184,6 +175,12 @@ class Behaviour:
                     elif Type=='vid':
                         if (item.endswith('.mp4')):
                             self.item_list.append(item)
+                    else:
+                        if (item.endswith('.jpg') or item.endswith('.png') or item.endswith('.mp4')):
+                            self.item_list.append(item)
+                        elif (item.endswith('.svg')):
+                            self.item_list.append(os.path.join(os.getcwd(),'no_svg.png'))
+                        
             
             # denotes if list contains items
             if self.item_list:
@@ -256,7 +253,7 @@ class Behaviour:
                         self.image_info.text=''
                         return cur_image
                 else:
-                    self.image_info.text='No Images Found'
+                    self.image_info.text='No Items Found'
                     return 'none.png'
 
             def getprev(image_dir):
@@ -267,6 +264,7 @@ class Behaviour:
         
             def traverse(list_type=self.list_type):
                 """Traverse through a directory"""
+                print("The list type is: ", self.list_type)
                 if create_list(Type=list_type):
                     if prvw_chkbox.active:
                         prvw_chkbox.active=False
@@ -277,14 +275,13 @@ class Behaviour:
                         self.image_info.text='Preview items on output path'
                         self.item_list=[]
                         self.curindex=-1
+
                         self.prev_btn.unbind(on_press=self.get_prev_func)
                         self.next_btn.unbind(on_press=self.get_next_func)
                         self.get_prev_func, self.get_next_func = lambda *_: None, lambda *_: None
                         self.prev_btn.bind(on_press = self.get_prev_func)
                         self.next_btn.bind(on_press = self.get_next_func)
                         
-                        
-
                     else:
                         prvw_chkbox.active = True
                         #code to recontinue from previously left spot
@@ -302,20 +299,21 @@ class Behaviour:
                         if self.list_type=='img':
                             self.next_btn.unbind(on_press=self.get_next_func)
                             self.prev_btn.unbind(on_press=self.get_prev_func)
-                            self.get_next_func=lambda*_: setattr(self.item_display, 'source', getnext(image_dir.text))
-                            self.get_prev_func=lambda*_: setattr(self.item_display, 'source', getprev(image_dir.text))
-                            self.prev_btn.bind(on_press=self.get_prev_func)
-                            self.next_btn.bind(on_press=self.get_next_func)
-
+                            #self.get_next_func=lambda*_: setattr(self.item_display, 'source', getnext(image_dir.text))
+                            #self.get_prev_func=lambda*_: setattr(self.item_display, 'source', getprev(image_dir.text))
+                            #self.prev_btn.bind(on_press=self.get_prev_func)
+                            #self.next_btn.bind(on_press=self.get_next_func)
                         elif self.list_type=='vid':
-                            self.get_next_func=lambda*_: setattr(self.item_display, 'source', getnext(image_dir.text))
-                            self.get_prev_func=lambda*_: setattr(self.item_display, 'source', getprev(image_dir.text))
+                            self.next_btn.unbind(on_press=self.get_next_func)
+                            self.prev_btn.unbind(on_press=self.get_prev_func)
 
+                        self.get_next_func=lambda*_: setattr(self.item_display, 'source', getnext(image_dir.text))
+                        self.get_prev_func=lambda*_: setattr(self.item_display, 'source', getprev(image_dir.text))
                         self.next_btn.bind(on_press=self.get_next_func)
                         self.prev_btn.bind(on_press=self.get_prev_func) 
                 
                 else:
-                    self.image_info.text = 'No images found'
+                    self.image_info.text = 'No Items Found'
                     self.item_display.source='none.png'
                     self.prev_btn.bind(on_press=lambda *_: None)
                     self.next_btn.bind(on_press=lambda *_: None)
@@ -326,13 +324,12 @@ class Behaviour:
                     self.item_list=[]
                 self.prev_state='img'
                 traverse()
-
-            elif vid_sel_chkbox.active:
+            else:# vid_sel_chkbox.active:
                 if self.prev_state=='img':
                     self.item_list=[]
                 self.prev_state='vid'
-
-                traverse(list_type='vid')
+                traverse()
+            
                     
 
         

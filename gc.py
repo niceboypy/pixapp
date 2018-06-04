@@ -58,7 +58,8 @@ indexed_files = [
     'none.png',
     'no_svg.png', 
     'custom_behaviour.bak', 
-    'none.mp4'
+    'none.mp4',
+    'statcalc.py'
 ]
 
 
