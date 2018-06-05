@@ -1,8 +1,10 @@
+#!/usr/bin/env python
+import getpass
 import os
 import time
 
 
-directory = '/home/normalman/project_folder/pythonprjs/pixabayapp'
+directory = '/home/{}/project_folder/pythonprjs/pixabayapp'.format(getpass.getuser())
 
 x = os.listdir(directory)
 
