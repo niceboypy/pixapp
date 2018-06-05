@@ -1,15 +1,15 @@
 from kivy.uix.boxlayout import BoxLayout
 from kivy.properties import ObjectProperty
 from kivy.uix.button import Button
-
+from kivy.storage.jsonstore import JsonStore
 
 class Integrated_api_bar(BoxLayout):
     orientation='vertical'
     def __init__(self):
         super().__init__()
         self.api_bar=Apibar()
+        self.api_bar.ids.api_input.text = self.api_bar.apikey
         self.search_panel=Search_type_panel()
-
         self.add_widget(self.api_bar)
         self.add_widget(self.search_panel)
         self.produce_user_interface()
@@ -38,23 +38,31 @@ class Apibar(BoxLayout):
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
+        #provisions for storing password
+        self.store = JsonStore("apikey.store")
+        self.apikey=''
+        try:
+            #code for getting key
+            self.apikey = self.store.get('apikey')['apikey']
+        except:
+            pass
 
     def clear(self):
         self.api_input_bar.text = ''
         self.api_input_bar.focus = True
-        # @@%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% cut this block
-        # string aligning algorithm in case padding does work
-        # def align_string(self,string=None):
-        #     print("function executed")
-        #     if string:
-        #         string=string
-        #     else:
-        #         string = 'key'#"Your API key"
+            # @@%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% cut this block
+            # string aligning algorithm in case padding does work
+            # def align_string(self,string=None):
+            #     print("function executed")
+            #     if string:
+            #         string=string
+            #     else:
+            #         string = 'key'#"Your API key"
 
-        #     size = int(list(self.api_input_bar.size)[1])
-        #     self.api_input_bar.hint_text= "{}{}".format(" "*(size-len(string)), string)
-        #     self.api_input_bar.focus = True
-        # @@%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+            #     size = int(list(self.api_input_bar.size)[1])
+            #     self.api_input_bar.hint_text= "{}{}".format(" "*(size-len(string)), string)
+            #     self.api_input_bar.focus = True
+            # @@%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
     def save_key(self):
         #self.clean_key() TO-DO
@@ -70,6 +78,12 @@ class Apibar(BoxLayout):
             self.api_input_bar.password = False
         else:
             self.api_input_bar.password = True
+    
+    def store_api_key(self, api_key):
+        api_key = api_key.strip()
+        if api_key:
+            #if it is not null, then store the api key
+            self.store.put('apikey', apikey=api_key)
 
 
 class Search_type_panel(BoxLayout):

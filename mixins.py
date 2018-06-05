@@ -1,5 +1,5 @@
 class Change_mixin:
-    def apply_changes(self, changes):
+    def apply_changes(self, changes, opt=None):
         if changes: 
             for change in changes:
                 #     [(

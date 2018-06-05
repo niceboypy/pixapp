@@ -30,7 +30,8 @@ class Img_query_holder(BoxLayout, Change_mixin):
         }
         self.dynwids=[]
         
-        self.apply_changes(changes)
+        self.apply_changes(changes, self.dynwids)
+        
 
 
 
@@ -67,7 +68,6 @@ class Info_and_preview(BoxLayout):
 
         self.textboxes=[]
         self.dropdowns=[]
-        self.dynwids=[]
         self.preview_panel=None
 
         self.setall()
@@ -122,13 +122,9 @@ class Info_and_preview(BoxLayout):
                             }),
                     ('label',{'text':'Quality: '})
                     ]
-        
-
-
         ####################RIGHT LAYOUT QUERY PROPERTIES################################
         ######     "note: " in QUERY DECLARATIONS we reference 'TextInput' object
         ######     as "Input" and Label as 'Label'
-
         numeric_input= Values.numeric_value #re.compile('^[0-9]+$')
         
         common_size_hint_x_lab= 0.25 #common size for label
@@ -187,14 +183,12 @@ class Info_and_preview(BoxLayout):
             'size_hint_x': (common_size_hint_x_lab)}),
             ('Add', [(Common_button, {'size_hint_x': dynamic_button_size, 
                                     'font_size': '10dp',
-                                    'text': 'Save As\nDefault'}),
+                                    'text': 'Settings'}),
                     (Common_button, {'size_hint_x': dynamic_button_size,
                                 'font_size':'10dp',
                                 'text': 'Browse..'})
                     ])
         ]   
-        # ('Add', [(Button, {properties}),
-        #           (Button, {properties1})]  )
 
         #################################################################################
         
@@ -216,6 +210,7 @@ class Info_and_preview(BoxLayout):
                     Img_query_holder(image_search, size_hint_y=common_size_hint_y),
                     Img_query_holder(multisearch, size_hint_y=common_size_hint_y),
                     Img_query_holder(output, size_hint_y=common_size_hint_y),]
+        
         
         #All dynamically added widget instances
         ################################################################################
@@ -239,7 +234,7 @@ class Info_and_preview(BoxLayout):
         self.right_layout.add_widget(self.textboxes[0])
         self.right_layout.add_widget(self.textboxes[3])
 
-         ############# RIGHT PANEL PREVIEW HOLDER ############################################
+        ############# RIGHT PANEL PREVIEW HOLDER ############################################
         
         self.preview_panel=Preview_panel()
         self.display_parent=self.preview_panel.ids.main_preview
@@ -269,7 +264,8 @@ class Info_and_preview(BoxLayout):
         self.add_widget(self.left_layout)
         self.add_widget(Label(size_hint_x=0.07))
         self.add_widget(self.right_layout)
-        # self.add_widget(Label(size_hint_x=0.01))
+        
+        
     
     def open_new_browser(self):
         webbrowser.open('https://pixabay.com')
@@ -336,6 +332,8 @@ class Info_and_preview(BoxLayout):
             'display_par':self.preview_panel.ids.image_panel.parent,
             'image_info':self.preview_panel.ids.image_information,
             'prev_btn': self.preview_panel.ids.previous_button,
-            'next_btn': self.preview_panel.ids.next_button
-
+            'next_btn': self.preview_panel.ids.next_button,
+            'settings': (self.textboxes[3].dynwids)[0]#settings button
         }
+        
+        

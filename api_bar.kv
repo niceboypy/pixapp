@@ -36,7 +36,7 @@
             ToggleButton:
                 id: toggle_visibility
                 size_hint_x: 0.27
-                text: "Hide"
+                text: "Show"
                 background_normal: "button.png"
                 background_down: "button_dep.png"
                 on_press: root.toggle_visibility()
@@ -46,6 +46,7 @@
                 id: save_key
                 text:"Save key"
                 size_hint_x: 0.4
+                on_press: root.store_api_key(api_input.text)
                 on_release: api_input.focus=True
                 
 

@@ -10,11 +10,13 @@ from kivy.uix.label import Label
 from kivy.uix.button import Button
 from kivy.uix.progressbar import ProgressBar
 from custom_widgets import Common_button, Flexible_Input, Plain_button
-from param_panel_ui import Info_and_preview#dropdown_holder, Img_query_holder, Img_search_preview
+from param_panel_ui import Info_and_preview #dropdown_holder, Img_query_holder, Img_search_preview
 from api_panel_ui import Integrated_api_bar
 from custom_behaviour import Behaviour
 from mixins import Fetch_mixin
+import os
 
+from par_values import Values
 from kivy.uix.spinner import Spinner
 from kivy.uix.bubble import Bubble
 Config.set('input', 'mouse', 'mouse, disable_multitouch')
@@ -79,10 +81,84 @@ class Paramholder(BoxLayout, Fetch_mixin):
 
 
 
-class pixapp(App):
-    def build(self):
+class PixApp(App):
+    def build_config(self, config):
+        self.myconfig = config
+        config.setdefaults('General', {'path': Values.def_path})
+        config.setdefaults('General', {'quantity':Values.quantity})
+        config.setdefaults('General', {'lang':Values.language[0]})
+
+    def build_settings(self, settings):
+
+        #allowed values for type field below:
+        #bool, numeric, string, path, title
+        settings.add_json_panel("Settings", self.config, data="""
+            [
+            {"type": "string",
+            "title": "Default Path",
+            "section": "General",
+            "key": "path"
+                },
+            {"type": "numeric",
+            "title": "Default file quantity to fetch",
+            "section": "General",
+            "key": "quantity"
+                },
+            {"type": "string",
+            "title": "Language used for search",
+            "section": "General",
+            "key": "lang"
+                }
+            ]""")
         
-        return Integration(orientation='vertical')
+    def build(self):
+        config = PixApp.get_running_app().config
+        update_path=config.getdefault("General", "path", Values.def_path)
+        update_quantity=config.getdefault("General", "quantity", Values.quantity)
+        update_language=config.getdefault("General", "lang", Values.language[0])
+
+        self.update_values(update_path, 
+                          update_quantity,
+                          update_language
+                          )
+
+        main = Integration(orientation='vertical')
+        main.paramholder.get('settings').bind(on_press=lambda*_: self.open_settings())
+        return main
+    
+    def update_values(self, *objs):
+        path, quantity, language = objs
+
+        #"Two type of update techniques"
+        #"Spin values in a list and just override the default values"
+        def override(value_to_rplc, newvalue, Path=False):
+            if Path:
+                if os.path.exists(newvalue):
+                    setattr(Values, value_to_rplc, newvalue)
+                else:
+                    try:
+                        os.makedirs(newvalue)
+                    except:
+                        #may be permission denied
+                        pass
+                    else:
+                        setattr(Values, value_to_rplc, newvalue)
+                return None
+            setattr(Values, value_to_rplc, newvalue)
+
+        def spin_update(value_to_rplc, newvalue):
+            """spin the list to update default values"""
+            list_values = getattr(Values, value_to_rplc) 
+            if (len(newvalue) > 2): newvalue=newvalue[:2]
+            if newvalue in list_values:
+                index = list_values.index(newvalue)
+                list_values[0], list_values[index]=list_values[index], list_values[0]
+                setattr(Values, value_to_rplc, list_values)
+
+        override('def_path', path, Path=True)
+        override('quantity', quantity)
+        spin_update('language', language)
+        
 
 if __name__ == '__main__':
-    pixapp().run()
+    PixApp().run()
