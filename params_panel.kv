@@ -51,73 +51,69 @@
             padding_x: "10dp"
 
             
-<Preview_panel>:
-    orientation: 'vertical'
-    size_hint_y: 0.6
-    Label:
-        size_hint_y:0.05
-    BoxLayout:
-        orientation:'vertical'
-        id: main_preview
-        mytext:'somethingIhaveInHere'
-        BoxLayout:
+# <Preview_panel>:
+#     orientation: 'vertical'
+#     size_hint_y: 0.6
+#     Label:
+#         size_hint_y:0.05
+#     BoxLayout:
+#         orientation:'vertical'
+#         id: main_preview
+#         mytext:'someplaceholder'
+#         BoxLayout:
+#             #topbox_1
+#             orientation: 'horizontal' 
+#             size_hint_y: 0.1
+#             padding_top: "10dp"
+#             Label:
+#                 size_hint_x: .5
+#             CheckBox:
+#                 id: preview_checkbox
+#                 active:False
+#                 size_hint_x: 0.01
+#             Label:
+#                 id: preview_label
+#                 size_hint_x: 1
+#                 text: "[ref=preview]Preview: [/ref]"
+#                 markup: True
+#                 font_size: "20dp"
+#                 halign: 'left'
+#                 size_hint_x: 0.4
             
-            orientation: 'horizontal' 
-            size_hint_y: 0.1
-            padding_top: "10dp"
-            Label:
-                size_hint_x: .5
-            CheckBox:
-                id: preview_checkbox
-                active:False
-                size_hint_x: 0.01
-            Label:
-                id: preview_label
-                size_hint_x: 1
-                text: "[ref=preview]Preview: [/ref]"
-                markup: True
-                font_size: "20dp"
-                halign: 'left'
-                size_hint_x: 0.4
-            
-            Label:
-                size_hint_x: .5
-                #fromhere
+#             Label:
+#                 size_hint_x: .5
+#                 #fromhere
     
-        Label:
-            size_hint_y: 0.15
-            id: image_information
-            text: ""
-            color: (.4, .4, .4, 1)
-            font_size: "15dp"
+#         Label:
+#             size_hint_y: 0.15
+#             id: image_information
+#             text: ""
+#             color: (.4, .4, .4, 1)
+#             font_size: "15dp"
             
-        BoxLayout:
-            Image:
-                id: image_panel
-                source: 'none.png'
+#         BoxLayout:
+#             Image:
+#                 id: image_panel
+#                 source: 'none.png'
 
-        BoxLayout:
-            size_hint_y: .1
-            padding_left: "25dp"
-            orientation:'horizontal'
-            Label:
-                size_hint_x: .4
-            Plain_button:
-                id: previous_button
-                size_hint_x: .2
-                text:'<'
-            Plain_button:
-                id: next_button
-                size_hint_x: .2
-                text: '>'
-            Label:
-                size_hint_x: .4
-                #to here
+#         BoxLayout:
+#             size_hint_y: .1
+#             padding_left: "25dp"
+#             orientation:'horizontal'
+#             Label:
+#                 size_hint_x: .4
+#             Plain_button:
+#                 id: previous_button
+#                 size_hint_x: .2
+#                 text:'<'
+#             Plain_button:
+#                 id: next_button
+#                 size_hint_x: .2
+#                 text: '>'
+#             Label:
+#                 size_hint_x: .4
+#                 #to here
         
-            
-    
-   
-
 
 <dropdown_holder>:
     orientation:'vertical'
@@ -134,7 +130,7 @@
         Spinner:
             id: spin
             text_autoupdate: True
-            values: ["First thing", "Second thing", "Third thing","fourth_thing", 'fifth thing','sixth', 'seventh']
+            values: []
             background_normal: 'dropdown.png'
             background_down: 'dropdown_dep.png'
             color: (1,1,1,1)

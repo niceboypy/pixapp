@@ -4,8 +4,10 @@ from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.scrollview import ScrollView
 from kivy.app import App
 from kivy.uix.button import Button
+from kivy.uix.checkbox import CheckBox
 import re
-from custom_widgets import Common_button
+from custom_widgets import Common_button, Plain_button
+from kivy.uix.image import Image
 import webbrowser, os, sys
 from kivy.properties import ObjectProperty
 from par_values import Values
@@ -29,7 +31,6 @@ class Img_query_holder(BoxLayout, Change_mixin):
             'parent': self.ids.dim_input.parent
         }
         self.dynwids=[]
-        
         self.apply_changes(changes, self.dynwids)
         
 
@@ -42,13 +43,75 @@ class dropdown_holder(BoxLayout, Change_mixin):
         self.items={
             'spinner':self.ids.spin,
             'label':self.ids.info_label
-        }
+            }
         self.ids.spin.dropdown_cls.max_height=150
         self.apply_changes(changes)
 
 class Preview_panel(BoxLayout):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
+        self.orientation = 'vertical'
+        self.size_hint_y= 0.6
+        self.configure()
+        class ids:
+            #emptyclass
+            pass
+    
+    def configure(self):
+        self.add_widget(Label(size_hint_y=0.05))
+        self.topbox = BoxLayout(orientation='vertical')
+        self.ids.main_preview = self.topbox
+        #we don't need references to number subscripted widgets_ they are named
+
+        #add the preview checkbox
+        self.topbox_1=BoxLayout(orientation='horizontal', size_hint_y=0.1)#, padding_top="10dp")
+        self.topbox_1.add_widget(Label(size_hint_x=0.5))
+        preview_checkbox = CheckBox(active=False, size_hint_x=0.01)    
+        self.ids.preview_checkbox = preview_checkbox
+        self.topbox_1.add_widget(self.ids.preview_checkbox)
+
+        # add the preview label#################################################
+        self.topbox_2 = BoxLayout(orientation='horizontal')
+        preview_label = Label(size_hint_x=0.4, text="[ref=preview]Preview: [/ref]", markup=True, font_size="20dp", halign='left')
+        self.ids.preview_label = preview_label
+        self.topbox_2.add_widget(self.ids.preview_label)
+        self.topbox_2.add_widget(Label(size_hint_x=0.5))
+
+
+        # add the image_information label######################################
+        image_information = Label(size_hint_y=0.15, text='', color=(.4, .4, .4, .4), font_size="15dp")
+        self.ids.image_information = image_information
+        self.topbox.add_widget(self.ids.image_information)
+
+        #add the image_panel##############################################
+        self.topbox_3= BoxLayout()
+        image_panel = Image(source='none.png')
+        self.ids.image_panel = image_panel
+        self.topbox_3.add_widget(self.ids.image_panel)
+
+
+        #add the panels##################################################
+        self.topbox_4 = BoxLayout(size_hint_y=.1, orientation='horizontal')
+
+        self.topbox_4.add_widget(Label(size_hint_x=.4))
+
+        previous_button = Plain_button(size_hint_x=.2, text='<')
+        next_button = Plain_button(size_hint_x=.2, text='>')
+
+        self.ids.previous_button = previous_button
+        self.ids.next_button = next_button
+
+        self.topbox_4.add_widget(self.ids.previous_button)
+        self.topbox_4.add_widget(self.ids.next_button)
+        self.topbox_4.add_widget(Label(size_hint_x=.4))
+
+
+        self.topbox.add_widget(self.topbox_1)
+        self.topbox.add_widget(self.topbox_2)
+        self.topbox.add_widget(self.topbox_3)
+        self.topbox.add_widget(self.topbox_4)
+        self.add_widget(self.topbox)
+
 
     def change_status(self, obj):
         obj.active=False if obj.active is True else True
@@ -74,11 +137,12 @@ class Info_and_preview(BoxLayout):
         self.produce_user_interface()
     
     def setall(self):
+        """set all the widgets"""
 
         language= [('spinner', 
                             {'values':Values.language
                             }),
-                    ('label',{'text':'language: '})
+                    ('label',{'text':'Language: '})
                     ]
 
         img_type= [('spinner', 
@@ -86,6 +150,12 @@ class Info_and_preview(BoxLayout):
                             }),
                     ('label',{'text':'Image type: '})
                     ]
+        
+        vid_type= [('spinner',
+                        {'values': Values.video_type
+                        }),
+                    ('label',{'text': 'Video type: '})
+                ]
 
         orien= [('spinner', 
                             {'values':Values.orientation
@@ -104,6 +174,7 @@ class Info_and_preview(BoxLayout):
                             }),
                     ('label',{'text':'Colors: '})
                     ]
+                    
 
         order= [('spinner', 
                             {'values':Values.order
@@ -127,8 +198,8 @@ class Info_and_preview(BoxLayout):
         ######     as "Input" and Label as 'Label'
         numeric_input= Values.numeric_value #re.compile('^[0-9]+$')
         
-        common_size_hint_x_lab= 0.25 #common size for label
-        common_size_hint_x_inp= 0.75 #common size for textinputwidget
+        common_size_hint_x_lab = 0.25 #common size for label
+        common_size_hint_x_inp = 0.75 #common size for textinputwidget
         common_size_hint_y=0.1
         dynamic_button_size=0.15
         count = 2
@@ -153,6 +224,7 @@ class Info_and_preview(BoxLayout):
             'size_hint_x':common_size_hint_x_inp
             }),
             ('Label',
+
             {'text': 'Fetch: ',
             'size_hint_x':common_size_hint_x_lab,
             }),
@@ -195,7 +267,6 @@ class Info_and_preview(BoxLayout):
         
         ########### QUERY INSTANCE DECLARATIONS #######################################
          #all dropdown instances
-
         self.dropdowns=[dropdown_holder(quality),
                         dropdown_holder(img_type),
                         dropdown_holder(language),
@@ -204,6 +275,28 @@ class Info_and_preview(BoxLayout):
                         dropdown_holder(orien),
                         dropdown_holder(colors),
                         ]
+        
+        #dropdown vids used for type video
+        self.dropdowns_vid=[self.dropdowns[0],
+                        dropdown_holder(vid_type),
+                        self.dropdowns[2],
+                        self.dropdowns[3],
+                        self.dropdowns[4],
+                        self.dropdowns[5],
+                        ]
+        
+        #dropdown imgs used for downloading both types
+        self.dropdowns_bth=[self.dropdowns[0],
+                        self.dropdowns[1],
+                        self.dropdowns_vid[1],
+                        self.dropdowns[2],
+                        self.dropdowns[3],
+                        self.dropdowns[4],
+                        self.dropdowns[5],
+                        self.dropdowns[6]
+                    ]
+        
+        self.spinners= [x.ids.spin for x in self.dropdowns]
 
         #all textbox instances
         self.textboxes = [Img_query_holder(quantity_panel, size_hint_y=common_size_hint_y), 
@@ -225,6 +318,7 @@ class Info_and_preview(BoxLayout):
 
 
         ###########FIX DROPDOWN INSTANCES OF LEFT LAYOUT##################
+        
         for widget in self.dropdowns:
           self.left_layout_drop.add_widget(widget)  
         
@@ -250,9 +344,11 @@ class Info_and_preview(BoxLayout):
         self.left_layout.add_widget(self.left_layout_drop)
         #123123123 searchpoint
        
-        self.left_layout.add_widget(Common_button(size_hint_y=0.2,
+        self.fetch_btn = Common_button(size_hint_y=0.2,
                 text='Fetch!', font_size="20dp",
-                ))
+                )
+
+        self.left_layout.add_widget(self.fetch_btn)
         
         self.right_layout.add_widget(Label(text='Source: [ref=link]Pixabay.com[/ref]',
                                     color=(0.15,0.15,0.15,1),
@@ -319,6 +415,9 @@ class Info_and_preview(BoxLayout):
     def produce_user_interface(self):
         self.interface={
             'dropdowns': self.dropdowns,
+            'dropdowns_vid':self.dropdowns_vid,
+            'dropdowns_bth':self.dropdowns_bth,
+            'spinners': self.spinners,
             'textboxes': [inst.items['Input'] for inst in  self.textboxes],
             'prvw_chkbx': self.preview_panel.ids.preview_checkbox,
             'prvw_label': self.preview_panel.ids.preview_label,
@@ -333,7 +432,10 @@ class Info_and_preview(BoxLayout):
             'image_info':self.preview_panel.ids.image_information,
             'prev_btn': self.preview_panel.ids.previous_button,
             'next_btn': self.preview_panel.ids.next_button,
-            'settings': (self.textboxes[3].dynwids)[0]#settings button
+            'settings': (self.textboxes[3].dynwids)[0],#settings button
+            'fetch_btn': self.fetch_btn
         }
+
+        
         
         

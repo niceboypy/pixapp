@@ -4,6 +4,24 @@ from par_values import Values
 import os
 from custom_widgets import save_dialog
 from kivy.uix.popup import Popup
+from kivy.uix.boxlayout import BoxLayout
+from kivy.uix.label import Label
+from kivy.uix.button import Button
+
+class custom_popup:
+    def __init__(self, msg, title):
+        box = BoxLayout(orientation = 'vertical', padding = (10))
+        box.add_widget(Label(text = msg, size_hint_y=.7))
+        btn1 = Button(text = "OK", size_hint_y=.1)
+        box.add_widget(btn1)
+
+        popup = Popup(title=title, title_size= (30), 
+                    title_align = 'center', content = box,
+                    size_hint=(None, None), size=(400, 400),
+                    auto_dismiss = True)
+
+        btn1.bind(on_press = popup.dismiss)
+        popup.open()
 
 class Behaviour:
 
@@ -17,6 +35,8 @@ class Behaviour:
         #behaviour for preview panel
         self.add_preview_behaviour(self.apiholder, self.paramholder)
 
+        #fetch button behaviour
+        self.add_fetch_behaviour(self.apiholder, self.paramholder)
     ###############################################################################################
     ####################### BEHAVIOUR FOR RADIO BUTTONS: #23D$ ####################################
     def add_search_type_behaviour(self, *objs):
@@ -34,42 +54,67 @@ class Behaviour:
 
         bth_sel_chkbx=apiholder.get('bth_sel_chkbx')
         bth_sel_lab = apiholder.get('bth_sel_lab')
-        from_parent = paramholder.get('drpdwn_par')
 
-        extra_dropdown = paramholder.get('dropdowns')[6]
-        display_par = paramholder.get('display_par')
+        drpdwn_par = paramholder.get('drpdwn_par') #from_parent is the dropdown parent
+        display_par = paramholder.get('display_par') #parent for display parent
+
+        #self.mapping provides the mapping for the img, vid or bth list
+        self.mapping={
+            'img': paramholder.get('dropdowns'),
+            'vid': paramholder.get('dropdowns_vid'),
+            'bth': paramholder.get('dropdowns_bth')
+        }
+
         image_panel = paramholder.get('img_display')
         video_panel = paramholder.get('vid_display')
         self.image_info = paramholder.get('image_info')
         
         self.item_display = image_panel #current panel that we have at preview
+        self.prev_state = 'img'         #initial state is always 'img'
+        Bind(img_sel_lab, on_ref_press = lambda *_: self.switch('img',sch_typ_pan, img_sel_chkbx, drpdwn_par, display_par, image_panel, video_panel))
+        Bind(vid_sel_lab, on_ref_press = lambda *_: self.switch('vid',sch_typ_pan, vid_sel_chkbx, drpdwn_par, display_par, image_panel, video_panel))
+        Bind(bth_sel_lab, on_ref_press = lambda *_: self.switch('bth',sch_typ_pan, bth_sel_chkbx, drpdwn_par, display_par, image_panel, video_panel))
 
-        Bind(img_sel_lab, on_ref_press =  lambda *_: self.switch('add',sch_typ_pan, img_sel_chkbx, extra_dropdown, from_parent, video_panel, display_par, image_panel))
-        Bind(vid_sel_lab, on_ref_press =  lambda *_: self.switch('remove',sch_typ_pan, vid_sel_chkbx, extra_dropdown, from_parent, image_panel, display_par, video_panel, both='vid'))
-        Bind(bth_sel_lab, on_ref_press =  lambda *_: self.switch('remove',sch_typ_pan, bth_sel_chkbx, extra_dropdown, from_parent, image_panel, display_par, video_panel, both='bth'))
-    
-    def switch(self, action, panel, obj, rmv_widgt, from_parent, replc_pan=None, from_dis_par=None, with_pan=None, both=None):
-        panel.setstatus(obj)
-        if action=='remove':
-            from_parent.remove_widget(rmv_widgt)
-            try:
-                self.list_type=both
-                from_dis_par.remove_widget(replc_pan)
-                from_dis_par.add_widget(with_pan)
-            except: 
-                pass
+
+    def switch(self, data_type, panel, obj, drpdwn_par, display_par, image_panel, video_panel):
+        """dynamically switch panels when the reference labels are pressed"""
+        #from_parent is the parent of spinner_widget
+        #from_dis_par is the parent of the display_widget 
+
+        panel.setstatus(obj) #change which panel is active by setting the active property
+
+        # if the previous dropdown list does not match the currently selected
+        # dropdown list, only then change the panel, otherwise
+        #user's click events will be ignored
+        if self.prev_state != data_type:
+            #remove all the dropdowns from the previous state
+            for dropdown in self.mapping[self.prev_state]:
+                drpdwn_par.remove_widget(dropdown)
             
-        else:
-            try:
-                self.list_type='img'
-                from_parent.add_widget(rmv_widgt)
-                from_dis_par.remove_widget(replc_pan)
-                from_dis_par.add_widget(with_pan)
-            except:
-                pass
+            for dropdown in self.mapping[data_type]:
+                drpdwn_par.add_widget(dropdown)
         
+            if self.prev_state == 'img':
+                display_par.remove_widget(image_panel)
+                display_par.add_widget(video_panel)
+            else:
+                #if self.prev_state == 'vid' or 'bth'
+                if data_type == 'img':
+                    try:
+                        display_par.remove_widget(video_panel)
+                        display_par.add_widget(image_panel)
+                    except:
+                        import sys
+                        print(sys.exc_info())
+                        import time
+                        time.sleep(10)
+        self.prev_state = data_type
+
+        print("The line has been executed")
+        #getting ready for list formation dynamically, according to user changes to the type of image downloaded
+        self.list_type = data_type
         self.item_list = []            #with_pan holds whatever panel is in the current display
-        self.item_display  = with_pan  #set the panel to whichever panel the radio indicates
+        self.item_display  = image_panel if data_type == 'img' else video_panel  #set the panel to whichever panel the radio indicates
         self.image_info.text=''
     ###############################################################################################
     ###############################################################################################
@@ -338,3 +383,83 @@ class Behaviour:
 
     ###############################################################################################
     
+    ###############################################################################################
+    ########################  BEHAVIOUR FOR PREVIEW PANEL #26D$ ###################################
+    def add_fetch_behaviour(self, apiholder, paramholder):
+        fetch_btn = paramholder.get('fetch_btn')
+        stat_indicator = (apiholder.get('img_sel_chkbx'), apiholder.get('vid_sel_chkbx'))
+        api_inp_bar= apiholder.get('api_inp_bar')
+        fetch_btn.bind(on_press=lambda*_: self.fetch(api_inp_bar, paramholder, stat_indicator))
+        self.spin_parameters = ['quality','image_type', 'language', 'category', 'order', 'orientation', 'colors']
+        
+    def fetch(self, api_bar, paramholder, stat_indicator):
+        dropdowns = paramholder.get('spinners')
+        textboxes = paramholder.get('textboxes')
+        api_key = api_bar.text
+        
+        if stat_indicator[0].active:
+            dwnld_type='img'
+            spin_count = 7
+        elif stat_indicator[1].active:
+            dwnld_type='vid'
+            spin_count = 6
+        else:
+            dwnld_type='bth'
+            spin_count = 6
+
+        text_values = [textboxes[i].text for i in range(3)]
+        spin_values = [spinners.text for spinners in dropdowns]
+        request_strings = self.form_requests(text_values, spin_values, dwnld_type, api_key, spin_count)
+
+
+
+    def form_requests(self, text_values, spin_values, dwnld_type, api_key, spin_count):
+        """form the request url string and return them as lists"""
+        _quantity= text_values[0]
+        quantity = int(Values.quantity) if (not _quantity) else int(_quantity) 
+        search = text_values[1]
+        multisearch = text_values[2]
+        if dwnld_type == 'img':
+            requests = [Values.image_search.format(api_key)]
+        elif dwnld_type == 'vid':
+            requests = [Values.video_search.format(api_key)]
+        else:
+            requests = [Values.image_search.format(api_key),
+                        Values.video_search.format(api_key)]
+        
+        #input error detection during fetch
+        if (quantity < 1):
+            custom_popup("Quantity must be at least 1", 'Error')
+            return None
+        if multisearch:
+            search_terms = multisearch.strip().split(',')
+            if search:
+                search_terms.append(search.strip())
+        elif search:
+            search_terms = [search.strip()]
+        else:
+            custom_popup('At least one search item must be specified', 'Error')
+            return None
+        
+        param_string = ''#confirm that it is set to nothing
+        for i in range(1, spin_count):
+            #param_string is the string that contains all the parameter specifications
+            #such as: &image_type=photo&language=en&category=art
+            if (spin_values[i] != 'all' and spin_values[i] != 'any'):
+                param_string += '&'+ self.spin_parameters[i]+'='+spin_values[i]
+
+        print("The param string is: ", param_string)
+            
+
+        search_terms = [terms.strip() for terms in search_terms]
+
+        
+
+
+        # fetch_btn.bind(on_press=showusnowupdate)
+
+    ###############################################################################################
+
+        
+
+

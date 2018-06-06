@@ -10,7 +10,7 @@ from kivy.uix.label import Label
 from kivy.uix.button import Button
 from kivy.uix.progressbar import ProgressBar
 from custom_widgets import Common_button, Flexible_Input, Plain_button
-from param_panel_ui import Info_and_preview #dropdown_holder, Img_query_holder, Img_search_preview
+from param_panel_ui import Info_and_preview 
 from api_panel_ui import Integrated_api_bar
 from custom_behaviour import Behaviour
 from mixins import Fetch_mixin
@@ -117,6 +117,8 @@ class PixApp(App):
         update_quantity=config.getdefault("General", "quantity", Values.quantity)
         update_language=config.getdefault("General", "lang", Values.language[0])
 
+        #The values are updated before anything that uses the default values are touched
+        #during the instantiation of the Integration() panel
         self.update_values(update_path, 
                           update_quantity,
                           update_language
