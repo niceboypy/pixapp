@@ -63,34 +63,40 @@ class Preview_panel(BoxLayout):
         self.ids.main_preview = self.topbox
         #we don't need references to number subscripted widgets_ they are named
 
-        #add the preview checkbox
+        #add the preview checkbox#########################################################################
         self.topbox_1=BoxLayout(orientation='horizontal', size_hint_y=0.1)#, padding_top="10dp")
         self.topbox_1.add_widget(Label(size_hint_x=0.5))
         preview_checkbox = CheckBox(active=False, size_hint_x=0.01)    
         self.ids.preview_checkbox = preview_checkbox
         self.topbox_1.add_widget(self.ids.preview_checkbox)
 
-        # add the preview label#################################################
-        self.topbox_2 = BoxLayout(orientation='horizontal')
+        # add the preview label
         preview_label = Label(size_hint_x=0.4, text="[ref=preview]Preview: [/ref]", markup=True, font_size="20dp", halign='left')
         self.ids.preview_label = preview_label
-        self.topbox_2.add_widget(self.ids.preview_label)
-        self.topbox_2.add_widget(Label(size_hint_x=0.5))
+        self.topbox_1.add_widget(self.ids.preview_label)
+        self.topbox_1.add_widget(Label(size_hint_x=0.5))
+        ##################################################################################################
 
 
-        # add the image_information label######################################
-        image_information = Label(size_hint_y=0.15, text='', color=(.4, .4, .4, .4), font_size="15dp")
+
+        # add the image_information label#################################################################
+        self.topbox_2 = BoxLayout(orientation='horizontal', size_hint_y=.1)
+        image_information = Label(size_hint_y=0.005, text='', color=(.6, .6, .6, 1), font_size="15dp")
         self.ids.image_information = image_information
-        self.topbox.add_widget(self.ids.image_information)
+        self.topbox_2.add_widget(self.ids.image_information)
+        ##################################################################################################
 
-        #add the image_panel##############################################
-        self.topbox_3= BoxLayout()
+        #add the image_panel##############################################################################
+        self.topbox_3 = BoxLayout(orientation='vertical')
+        x = Label(size_hint_y=.05)#just for adjusting proportions
         image_panel = Image(source='none.png')
         self.ids.image_panel = image_panel
+        self.topbox_3.add_widget(x)
         self.topbox_3.add_widget(self.ids.image_panel)
+        ##################################################################################################
 
 
-        #add the panels##################################################
+        #add the panels###################################################################################
         self.topbox_4 = BoxLayout(size_hint_y=.1, orientation='horizontal')
 
         self.topbox_4.add_widget(Label(size_hint_x=.4))
