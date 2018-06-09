@@ -78,9 +78,6 @@ class Paramholder(BoxLayout, Fetch_mixin):
         self.interface = self.Info_and_preview.interface
         self.add_widget(self.Info_and_preview)
         
-
-
-
 class PixApp(App):
     def build_config(self, config):
         self.myconfig = config

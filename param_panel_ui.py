@@ -19,9 +19,6 @@ class Img_search_preview(BoxLayout):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
     
-    
-            
-
 class Img_query_holder(BoxLayout, Change_mixin):
     def __init__(self, changes=None, **kwargs):
         super().__init__(**kwargs)
@@ -33,8 +30,6 @@ class Img_query_holder(BoxLayout, Change_mixin):
         self.dynwids=[]
         self.apply_changes(changes, self.dynwids)
         
-
-
 
 class dropdown_holder(BoxLayout, Change_mixin):
     spinner = ObjectProperty()
@@ -95,7 +90,6 @@ class Preview_panel(BoxLayout):
         self.topbox_3.add_widget(self.ids.image_panel)
         ##################################################################################################
 
-
         #add the panels###################################################################################
         self.topbox_4 = BoxLayout(size_hint_y=.1, orientation='horizontal')
 
@@ -110,7 +104,6 @@ class Preview_panel(BoxLayout):
         self.topbox_4.add_widget(self.ids.previous_button)
         self.topbox_4.add_widget(self.ids.next_button)
         self.topbox_4.add_widget(Label(size_hint_x=.4))
-
 
         self.topbox.add_widget(self.topbox_1)
         self.topbox.add_widget(self.topbox_2)

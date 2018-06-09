@@ -92,7 +92,11 @@ class Behaviour:
                 drpdwn_par.remove_widget(dropdown)
             
             for dropdown in self.mapping[data_type]:
-                drpdwn_par.add_widget(dropdown)
+                try:    
+                    drpdwn_par.add_widget(dropdown)
+                except:
+                    #already has a parent
+                    pass
         
             if self.prev_state == 'img':
                 display_par.remove_widget(image_panel)
@@ -104,13 +108,11 @@ class Behaviour:
                         display_par.remove_widget(video_panel)
                         display_par.add_widget(image_panel)
                     except:
-                        import sys
-                        print(sys.exc_info())
-                        import time
-                        time.sleep(10)
+                        #already has a parent
+                        pass
+                        
         self.prev_state = data_type
 
-        print("The line has been executed")
         #getting ready for list formation dynamically, according to user changes to the type of image downloaded
         self.list_type = data_type
         self.item_list = []            #with_pan holds whatever panel is in the current display
@@ -387,79 +389,182 @@ class Behaviour:
     ########################  BEHAVIOUR FOR PREVIEW PANEL #26D$ ###################################
     def add_fetch_behaviour(self, apiholder, paramholder):
         fetch_btn = paramholder.get('fetch_btn')
-        stat_indicator = (apiholder.get('img_sel_chkbx'), apiholder.get('vid_sel_chkbx'))
-        api_inp_bar= apiholder.get('api_inp_bar')
-        fetch_btn.bind(on_press=lambda*_: self.fetch(api_inp_bar, paramholder, stat_indicator))
-        self.spin_parameters = ['quality','image_type', 'language', 'category', 'order', 'orientation', 'colors']
+
+        stat_indicator =    (apiholder.get('img_sel_chkbx'), apiholder.get('vid_sel_chkbx'))
+        api_inp_bar    =    apiholder.get('api_inp_bar')
+        editor_choice  = apiholder.get('editor_choice')
+        whole_dropdowns=    ([x.items['spinner'] for x in paramholder.get('dropdowns')],
+                            [x.items['spinner'] for x in paramholder.get('dropdowns_vid')],
+                            [x.items['spinner'] for x in paramholder.get('dropdowns_bth')])
+
+        textboxes      =    paramholder.get('textboxes')
         
-    def fetch(self, api_bar, paramholder, stat_indicator):
-        dropdowns = paramholder.get('spinners')
-        textboxes = paramholder.get('textboxes')
+        self.img_par_list = ['quality', 'image_type', 'lang', 'category', 'order', 'orientation', 'colors']
+        self.vid_par_list = ['quality', 'video_type', 'lang', 'category', 'order', 'orientation']
+        self.bth_par_list = ['quality', 'image_type', 'video_type', 'lang', 'category', 'order', 'orientation', 'colors']
+        self.parameter_structure = "&{}={}" #string used for parameter forming
+        api_key = api_inp_bar.text
+
+        fetch_btn.bind(on_press=lambda*_: self.fetch(api_inp_bar, editor_choice, paramholder, textboxes, whole_dropdowns, stat_indicator))
+
+
+    def fetch(self, api_bar, editor_choice, paramholder, textboxes, whole_dropdowns,stat_indicator):
+        # dropdowns, dropdowns_vid, dropdowns_bth = whole_dropdowns
+        img_sel_chkbox, vid_sel_chkbox = stat_indicator
+
         api_key = api_bar.text
-        
-        if stat_indicator[0].active:
+        self.type_base_url ={'img': Values.image_search.format(api_key),
+                    'vid': Values.video_search.format(api_key)}
+
+        if img_sel_chkbox.active: 
+            parameters = [spinner.text for spinner in whole_dropdowns[0]]
             dwnld_type='img'
-            spin_count = 7
-        elif stat_indicator[1].active:
+            parameter_keys=self.img_par_list
+        elif vid_sel_chkbox.active:
+            parameters = [spinner.text for spinner in whole_dropdowns[1]]
             dwnld_type='vid'
-            spin_count = 6
+            parameter_keys=self.vid_par_list
         else:
+            parameters = [spinner.text for spinner in whole_dropdowns[2]]
             dwnld_type='bth'
-            spin_count = 6
-
-        text_values = [textboxes[i].text for i in range(3)]
-        spin_values = [spinners.text for spinners in dropdowns]
-        request_strings = self.form_requests(text_values, spin_values, dwnld_type, api_key, spin_count)
+            parameter_keys=self.bth_par_list
+        
+        requests = self.form_requests(textboxes, parameters, parameter_keys, dwnld_type,editor_choice.active)
 
 
-
-    def form_requests(self, text_values, spin_values, dwnld_type, api_key, spin_count):
+    def form_requests(self, text_values, parameters, parameter_keys, dwnld_type, editor_choice:"editor's choice image results"):
         """form the request url string and return them as lists"""
-        _quantity= text_values[0]
+
+        image_parameters = [1,7]
+        video_parameters = [2] #since this is lesser than image parameters , we use this
+
+        _quantity= text_values[0].text
         quantity = int(Values.quantity) if (not _quantity) else int(_quantity) 
-        search = text_values[1]
-        multisearch = text_values[2]
-        if dwnld_type == 'img':
-            requests = [Values.image_search.format(api_key)]
-        elif dwnld_type == 'vid':
-            requests = [Values.video_search.format(api_key)]
-        else:
-            requests = [Values.image_search.format(api_key),
-                        Values.video_search.format(api_key)]
+        
+        search = text_values[1].text.strip().replace(' ', '+')
+        multisearch = text_values[2].text
+
+        requests = {'img': [], 'vid': []}
+        base_params = {'img': '', 'vid': ''}
         
         #input error detection during fetch
-        if (quantity < 1):
+        if (quantity < 3):
             custom_popup("Quantity must be at least 1", 'Error')
             return None
+
         if multisearch:
             search_terms = multisearch.strip().split(',')
-            if search:
-                search_terms.append(search.strip())
+            
+            #stripping any further is of no use, because the user can enter
+            #<some_words><comma><space><comma><space><comma>.... and so on, so, it has to be checked later
+
+            search_terms = [terms.strip().replace(' ', '+') for terms in search_terms]
+            if search != '':
+                search_terms += [search]
         elif search:
-            search_terms = [search.strip()]
+            search_terms = [search]
         else:
             custom_popup('At least one search item must be specified', 'Error')
             return None
         
-        param_string = ''#confirm that it is set to nothing
-        for i in range(1, spin_count):
-            #param_string is the string that contains all the parameter specifications
-            #such as: &image_type=photo&language=en&category=art
-            if (spin_values[i] != 'all' and spin_values[i] != 'any'):
-                param_string += '&'+ self.spin_parameters[i]+'='+spin_values[i]
+        search_terms = [items for items in search_terms if items != '']
+        search_terms = list(set(search_terms)) #convert it into a unique list
 
-        print("The param string is: ", param_string)
+        #alter any pornograhic search terms here
+        #     TO DO                            #
+        
+        list_length = len(parameters)
+        
+        if dwnld_type == 'bth':
+            for i in range(1,  list_length):
+                if (parameters[i]!='any' and parameters[i]!='all'):
+                    if i in video_parameters:
+                        base_params['vid'] += self.parameter_structure.format(parameter_keys[i],parameters[i])
+                    elif i in image_parameters:
+                        base_params['img'] += self.parameter_structure.format(parameter_keys[i],parameters[i])
+                    else:
+                        base_params['img'] += self.parameter_structure.format(parameter_keys[i],parameters[i])
+                        base_params['vid'] += self.parameter_structure.format(parameter_keys[i],parameters[i])
+
+        else:
+            for i in range(1, list_length):
+                if (parameters[i]!='any' and parameters[i]!='all'):
+                    base_params[dwnld_type] += self.parameter_structure.format(parameter_keys[i],parameters[i])
+
+
+        #formulate the urls inaccording to quantity
+        pagination_strings = self.get_condition(len(search_terms), quantity, dwnld_type)
+        editor_choice = self.parameter_structure.format('editors_choice', 'true') if editor_choice else ''
+
+        if base_params['img']:
+            for search_term in search_terms:
+                for pagination in pagination_strings:
+                    requests['img'].append(self.type_base_url['img']+self.parameter_structure.format('q', search_term)+\
+                                            base_params['img']+editor_choice+pagination)
+
+        if base_params['vid']:
+            for search_term in search_terms:
+                for pagination in pagination_strings:
+                    requests['vid'].append(self.type_base_url['vid']+self.parameter_structure.format('q', search_term)+\
+                                            base_params['vid']+editor_choice+pagination)
+        
+        #pagination_strings give the amount of required pages
+        import pprint
+        print("*******************************")
+        pprint.pprint(requests['img'])
+        print("*******************************")
+        pprint.pprint(requests['vid'])
+        print("*******************************")
             
+    
 
-        search_terms = [terms.strip() for terms in search_terms]
+    def get_condition(self, total_items, quantity, dwnld_type):
+        """  specifies if the urls 
+        are to be splitted, paginated, numbered, to satisfy the 
+        quantity need to as far as possible"""
 
+        #say there are 3 search terms, then the total quantity is to be
+        #divided by 3 and the sum total of the results
+        #is equal to the quantity
+        #e.g. car, bike, would download 30 cars and 30 bike
+        #images if the quantity is 60
+
+        #dwnld_each describes how much each search_term image could 
+
+        dwnld_each = int(quantity/total_items)+1        #download approximately the given quantity
+        pagination_strings = []
+        pagination_structure = '&page={}&per_page={}'
+
+        print("The download each is: ", dwnld_each)
+        print("The total items is: ", total_items)
+        print("The quantity is: ", quantity)
+
+        if (dwnld_each>200):
+
+            #num_pages: number of pages to generate
+            #per_page: allowed quantity to fetch per page
+            per_page = 200
+            num_pages = int(dwnld_each/per_page)
+            curpage = 0 #next page number value after the for loop
+            
+            for i in range(1, num_pages+1):
+                pagination_strings.append(pagination_structure.format(i, per_page))
+                curpage = i+1
+                dwnld_each -= per_page
+
+            dwnld_each = 3 if dwnld_each < 3 else dwnld_each
+            pagination_strings.append(pagination_structure.format(curpage, dwnld_each))
+
+        else:
+            #if search items are more than the number of downloads then, 
+            #we gotta get the downloads equal to at least the number of search terms
+            if total_items > dwnld_each:
+                dwnld_each = total_items
+
+            dwnld_each = 3 if dwnld_each<3 else dwnld_each
+            pagination_strings.append(pagination_structure.format(1, dwnld_each))
         
-
-
-        # fetch_btn.bind(on_press=showusnowupdate)
-
+        print("The pagination strings are: ", pagination_strings)
+        
+        return pagination_strings
     ###############################################################################################
-
-        
-
-

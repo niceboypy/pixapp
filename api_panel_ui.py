@@ -24,7 +24,8 @@ class Integrated_api_bar(BoxLayout):
             'vid_sel_lab':self.search_panel.ids.vid_lab,
             'bth_sel_chkbx':self.search_panel.ids.both,
             'bth_sel_lab':self.search_panel.ids.both_lab,
-            'sch_typ_pan':self.search_panel
+            'sch_typ_pan':self.search_panel,
+            'editor_choice': self.search_panel.ids.editor_choice
         }
 
 
@@ -98,6 +99,7 @@ class Search_type_panel(BoxLayout):
                                 self.ids.video,
                                 self.ids.both]
         self.padding_left='20dp'
+        self.editor_choice = self.ids.editor_choice
 
     def setstatus(self, obj=None):
         if obj is self.ids.editor_choice:

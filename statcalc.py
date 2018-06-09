@@ -15,7 +15,10 @@ for i in x:
 
 
 filelist = [os.path.join(directory, x) for x in List]
-print("FILES READ: ")
+print("")
+print("--- FILES READ: ---")
+print("-------------------")
+print("")
 for x in filelist:
 	print("--- {} ".format(x.split('/')[-1]))
 
@@ -36,10 +39,13 @@ for File in filelist:
 
 total_spaces = total_lines-total_written_lines
 				
-				
-print("The total lines are: ", total_lines)
-print("The total written lines are: ", total_written_lines)
-print("The total comments are: ", total_comments)
-print("The total non_comments are: ", num_lines)
-print("The total spaces are: ", total_spaces)
+print("")
+print("--- statistic results ----")		
+print("--------------------------")
+print("")
+print("The total lines are:         --- {}".format(total_lines))
+print("The total written lines are: --- {}".format(total_written_lines))
+print("The total comments are:      --- {}".format(total_comments))
+print("The total non_comments are:  --- {}".format(num_lines))
+print("The total spaces are:        --- {}".format(total_spaces))
 			

@@ -12,6 +12,7 @@ if not os.path.exists(def_dir):
 
 
 class Values:
+    
     ####### IMAGE AND VIDEO SEARCH URLS #######################################
     image_search = "https://pixabay.com/api/?key={}&safesearch=true"
     video_search = "https://pixabay.com/api/videos/?key={}&safesearch=true"
