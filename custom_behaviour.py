@@ -8,6 +8,9 @@ from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.label import Label
 from kivy.uix.button import Button
 
+import urllib.request as urlrequest
+import json
+
 class custom_popup:
     def __init__(self, msg, title):
         box = BoxLayout(orientation = 'vertical', padding = (10))
@@ -393,6 +396,7 @@ class Behaviour:
         stat_indicator =    (apiholder.get('img_sel_chkbx'), apiholder.get('vid_sel_chkbx'))
         api_inp_bar    =    apiholder.get('api_inp_bar')
         editor_choice  = apiholder.get('editor_choice')
+        output_fld = paramholder.get('textboxes')[3]
         whole_dropdowns=    ([x.items['spinner'] for x in paramholder.get('dropdowns')],
                             [x.items['spinner'] for x in paramholder.get('dropdowns_vid')],
                             [x.items['spinner'] for x in paramholder.get('dropdowns_bth')])
@@ -405,12 +409,13 @@ class Behaviour:
         self.parameter_structure = "&{}={}" #string used for parameter forming
         api_key = api_inp_bar.text
 
-        fetch_btn.bind(on_press=lambda*_: self.fetch(api_inp_bar, editor_choice, paramholder, textboxes, whole_dropdowns, stat_indicator))
+        fetch_btn.bind(on_press=lambda*_: self.fetch(api_inp_bar, output_fld,editor_choice, paramholder, textboxes, whole_dropdowns, stat_indicator))
 
 
-    def fetch(self, api_bar, editor_choice, paramholder, textboxes, whole_dropdowns,stat_indicator):
+    def fetch(self, api_bar,output_fld, editor_choice, paramholder, textboxes, whole_dropdowns,stat_indicator):
         # dropdowns, dropdowns_vid, dropdowns_bth = whole_dropdowns
         img_sel_chkbox, vid_sel_chkbox = stat_indicator
+        
 
         api_key = api_bar.text
         self.type_base_url ={'img': Values.image_search.format(api_key),
@@ -430,6 +435,30 @@ class Behaviour:
             parameter_keys=self.bth_par_list
         
         requests = self.form_requests(textboxes, parameters, parameter_keys, dwnld_type,editor_choice.active)
+        
+        if requests:
+            #urllib.request = urlrequest
+            file_numbering = 1 #simple numbering scheme
+            path = os.path.join(output_fld.text, dwnld_type+str(file_numbering)+'.jpg')
+            for request in requests['img']:
+                
+                json_result = urlrequest.urlopen(request).read().decode()
+                json_result = json.loads(json_result)
+                # for elements in json['hits']:
+                    # print(elements)
+
+
+                for urls in json_result['hits']:
+                    image_url = urls['largeImageURL']
+                
+
+                try:
+                    with open(path, 'xb') as something:
+                        pass
+                except FileExistsError:
+                    #file already exists so assign a new name
+                    pass
+
 
 
     def form_requests(self, text_values, parameters, parameter_keys, dwnld_type, editor_choice:"editor's choice image results"):
@@ -508,15 +537,6 @@ class Behaviour:
                     requests['vid'].append(self.type_base_url['vid']+self.parameter_structure.format('q', search_term)+\
                                             base_params['vid']+editor_choice+pagination)
         
-        #pagination_strings give the amount of required pages
-        import pprint
-        print("*******************************")
-        pprint.pprint(requests['img'])
-        print("*******************************")
-        pprint.pprint(requests['vid'])
-        print("*******************************")
-            
-    
 
     def get_condition(self, total_items, quantity, dwnld_type):
         """  specifies if the urls 
