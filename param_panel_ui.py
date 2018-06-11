@@ -350,7 +350,7 @@ class Info_and_preview(BoxLayout):
         self.left_layout.add_widget(self.fetch_btn)
         
         self.right_layout.add_widget(Label(text='Source: [ref=link]Pixabay.com[/ref]',
-                                    color=(0.15,0.15,0.15,1),
+                                    color=(0.5,0.5,0.5,1),
                                     font_size='20dp',
                                     size_hint_y="0.08",
                                     markup=True,on_ref_press=lambda *_:self.open_new_browser())) #not gonna change for eternity

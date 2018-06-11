@@ -7,6 +7,7 @@ from kivy.uix.popup import Popup
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.label import Label
 from kivy.uix.button import Button
+import threading
 
 import urllib.request as urlrequest
 import json
@@ -361,13 +362,11 @@ class Behaviour:
                         self.get_prev_func=lambda*_: setattr(self.item_display, 'source', getprev(image_dir.text))
                         self.next_btn.bind(on_press=self.get_next_func)
                         self.prev_btn.bind(on_press=self.get_prev_func) 
-                
                 else:
                     self.image_info.text = 'No Items Found'
                     self.item_display.source='none.png'
                     self.prev_btn.bind(on_press=lambda *_: None)
                     self.next_btn.bind(on_press=lambda *_: None)
-
             if img_sel_chkbox.active:
                 #we create a new list
                 if self.prev_state=='vid':
@@ -380,12 +379,9 @@ class Behaviour:
                 self.prev_state='vid'
                 traverse()
             
-                    
-
-        
+            
         prvw_label.bind(on_ref_press=lambda*_: select_behaviour(img_sel_chkbox,
                                 prvw_chkbox, image_dir))
-
     ###############################################################################################
     
     ###############################################################################################
@@ -409,6 +405,7 @@ class Behaviour:
         self.parameter_structure = "&{}={}" #string used for parameter forming
         api_key = api_inp_bar.text
 
+        self.thread_test = 0
         fetch_btn.bind(on_press=lambda*_: self.fetch(api_inp_bar, output_fld,editor_choice, paramholder, textboxes, whole_dropdowns, stat_indicator))
 
 
@@ -437,30 +434,38 @@ class Behaviour:
         requests = self.form_requests(textboxes, parameters, parameter_keys, dwnld_type,editor_choice.active)
         
         if requests:
-            #urllib.request = urlrequest
-            file_numbering = 1 #simple numbering scheme
-            path = os.path.join(output_fld.text, dwnld_type+str(file_numbering)+'.jpg')
-            for request in requests['img']:
-                
-                json_result = urlrequest.urlopen(request).read().decode()
-                json_result = json.loads(json_result)
-                # for elements in json['hits']:
-                    # print(elements)
-
-
-                for urls in json_result['hits']:
-                    image_url = urls['largeImageURL']
-                
-
-                try:
-                    with open(path, 'xb') as something:
-                        pass
-                except FileExistsError:
-                    #file already exists so assign a new name
-                    pass
-
-
-
+            thread_essentials = (requests, output_fld.text, dwnld_type)
+            threaded_download = threading.Thread(target = self.threaded_download, args = (thread_essentials,), daemon=True)
+            threaded_download.start()
+        
+    def threaded_download(self, thread_essentials):
+        self.thread_test += 1
+        requests, output_fld, dwnld_type = thread_essentials
+        #urllib.request = urlrequest
+        file_numbering = 1 #simple numbering scheme
+        path = os.path.join(output_fld, dwnld_type+str(file_numbering)+'.{}')
+        for request in requests[dwnld_type]:
+            json_result = urlrequest.urlopen(request).read().decode()
+            json_result = json.loads(json_result)
+            
+            for urls in json_result['hits']:
+                image_url = urls['largeImageURL']
+                extension = image_url.split('.')[-1] #the last item in the list is the extension
+                file_exists = True
+                while file_exists:
+                    try:
+                        with open(path.format(extension), 'xb') as File:
+                            image_binary = urlrequest.urlopen(image_url).read()
+                            File.write(image_binary)
+                            file_exists = False
+                            file_numbering += 1
+                            path = os.path.join(output_fld, dwnld_type+str(file_numbering)+'.{}')
+                    except FileExistsError:
+                        file_numbering += 1
+                        path = os.path.join(output_fld, dwnld_type+str(file_numbering)+'.{}')
+                        file_exists = True
+        
+        
     def form_requests(self, text_values, parameters, parameter_keys, dwnld_type, editor_choice:"editor's choice image results"):
         """form the request url string and return them as lists"""
 
@@ -537,6 +542,8 @@ class Behaviour:
                     requests['vid'].append(self.type_base_url['vid']+self.parameter_structure.format('q', search_term)+\
                                             base_params['vid']+editor_choice+pagination)
         
+        requests['bth'] = requests['img']+requests['vid']
+        return requests
 
     def get_condition(self, total_items, quantity, dwnld_type):
         """  specifies if the urls 
